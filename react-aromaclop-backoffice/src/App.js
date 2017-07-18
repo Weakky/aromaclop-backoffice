@@ -35,7 +35,7 @@ class App extends Component {
               {
                 tree.map(leaf => (
                   <SidebarItem key={leaf}>
-                    <Link to={`/${leaf}`}>
+                    <Link className="f9 fw1 white link dim" to={`/${leaf}`}>
                       {leaf}
                     </Link>
                   </SidebarItem>
