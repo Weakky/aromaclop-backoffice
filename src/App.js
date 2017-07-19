@@ -12,15 +12,16 @@ import { ApolloProvider } from 'react-apollo';
 import { BrowserRouter as Router, Link, Route } from 'react-router-dom';
 
 import './App.css';
-import 'tachyons'
+import 'tachyons';
 
 const networkInterface = createNetworkInterface({
   uri: 'https://api.graph.cool/simple/v1/cj57vba1nl6ia0181m1vbe5cr',
-})
+});
 
 const client = new ApolloClient({
-  networkInterface
-})
+    networkInterface,
+    dataIdFromObject: o => o.id
+});
 
 class App extends Component {
 

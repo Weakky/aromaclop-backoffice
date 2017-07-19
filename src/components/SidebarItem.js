@@ -8,6 +8,6 @@ const SidebarItem = ( props ) => (
         padding: '5px 10px',
         fontSize: '16px',
     }} {...props} />
-)
+);
 
 export default SidebarItem;

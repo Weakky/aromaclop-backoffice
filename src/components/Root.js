@@ -5,6 +5,6 @@ const Root = (props) => (
         style={{
             display: 'flex',
         }} {...props} />
-)
+);
 
 export default Root;
