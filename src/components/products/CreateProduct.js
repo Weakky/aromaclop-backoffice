@@ -1,66 +1,13 @@
 import React from 'react';
 import axios from 'axios';
 import { withRouter } from 'react-router-dom';
-import { graphql } from 'react-apollo';
+import { compose, graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 
-import SelectBrands from '../brands/SelectBrands';
-import SelectNicotineRates from '../nicotineRates/SelectNicotineRates';
-import SelectCategories from '../categories/SelectCategory';
+import SelectDetails from './SelectDetails';
+import ImageUpload from './ImageUpload';
 
 import { ListAllProductsQuery } from './ListProduct';
-
-class ImageUpload extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            file: '',
-            imagePreviewUrl: '',
-        };
-    }
-
-    _handleImageChange(e) {
-        e.preventDefault();
-
-        const reader = new FileReader();
-        const file = e.target.files[0];
-
-        reader.onloadend = () => {
-            this.props.onImageSelected({
-                file: file,
-                imagePreviewUrl: reader.result
-            });
-            this.setState({
-                file: file,
-                imagePreviewUrl: reader.result
-            });
-        };
-
-        reader.readAsDataURL(file)
-    }
-
-    render() {
-        const { imagePreviewUrl } = this.state;
-        const imagePreview = imagePreviewUrl
-            ? ( <img src={imagePreviewUrl}/> )
-            : ( <div className="previewText">Please select an Image for Preview</div> );
-
-        return (
-            <div className="previewComponent">
-                    <input className="fileInput"
-                           type="file"
-                           onChange={(e)=>this._handleImageChange(e)} />
-                <div className="imgPreview">
-                    {imagePreview}
-                </div>
-            </div>
-        )
-    }
-}
-
-ImageUpload.propTypes = {
-    onImageSelected: React.PropTypes.func,
-};
 
 class CreateProduct extends React.Component {
 
@@ -82,6 +29,7 @@ class CreateProduct extends React.Component {
     async uploadFile() {
         const { file } = this.state;
         const data = new FormData();
+
         data.append('data', file);
 
         return axios.post('https://api.graph.cool/file/v1/cj57vba1nl6ia0181m1vbe5cr', data, {
@@ -92,6 +40,17 @@ class CreateProduct extends React.Component {
     }
 
     render() {
+        const { data: {
+            allBrands,
+            allNicotineRateses: allNicotineRates,
+            allCategories
+        } } = this.props;
+
+
+        if (this.props.data.loading) {
+            return <div>Loading...</div>
+        }
+
         return (
             <div className='w-100 pa4 flex justify-center'>
                 <div style={{ maxWidth: 400 }} className=''>
@@ -109,15 +68,23 @@ class CreateProduct extends React.Component {
                         placeholder='Available'
                         onChange={(e) => this.setState({ available: e.target.checked })}
                     />
-                    <SelectCategories onSelectedValue={({ value }) => this.setState({ categoriesIds: [value] })}/>
-                    <SelectBrands onSelectedValue={({ value }) => this.setState({ brandId: value })}/>
-                    <SelectNicotineRates onSelectedValue={({ value }) => this.setState({ nicotineRatesId: value })}/>
-                    <ImageUpload onImageSelected={({ file }) => {
-                        this.setState({ file });
-                    }}
+                    <SelectDetails label="Select brand:"
+                                   data={allBrands}
+                                   onSelectedValue={({ value }) => this.setState({ brandId: value })}
                     />
-                    { this.state.name && <button className='pa3 bg-black-10 bn dim ttu pointer'
-                                                 onClick={this.handlePost}> Add product </button>
+                    <SelectDetails label="Select nicotine rates:"
+                                   data={allNicotineRates}
+                                   onSelectedValue={({ value }) => this.setState({ nicotineRatesId: value })}
+                    />
+                    <SelectDetails label="Select category:"
+                                   data={allCategories}
+                                   onSelectedValue={({ value }) => this.setState({ categoriesIds: [value] })}
+                    />
+                    <ImageUpload onImageSelected={({ file }) => this.setState({ file })} />
+                    { this.state.name && this.state.file &&
+                    <button className='pa3 bg-black-10 bn dim ttu pointer'
+                            onClick={this.handlePost}> Add product
+                    </button>
                     }
                 </div>
             </div>
@@ -126,6 +93,11 @@ class CreateProduct extends React.Component {
 
     async handlePost() {
         const { name, available, brandId, nicotineRatesId, categoriesIds } = this.state;
+        const { data: {
+            allBrands,
+            allNicotineRateses: allNicotineRates,
+            allCategories
+        }} = this.props;
 
         try {
             const { data: { url } } = await this.uploadFile();
@@ -134,9 +106,9 @@ class CreateProduct extends React.Component {
                 name,
                 available,
                 imageUrl: url,
-                brandId,
-                nicotineRatesId,
-                categoriesIds
+                brandId: brandId ? brandId : allBrands[0].id,
+                nicotineRatesId: nicotineRatesId ? nicotineRatesId : allNicotineRates[0].id,
+                categoriesIds: categoriesIds.length ? categoriesIds : allCategories[0].id,
             });
             this.props.history.push('/Produits/list');
         } catch (e) {
@@ -146,7 +118,7 @@ class CreateProduct extends React.Component {
     }
 }
 
-const addProduct = gql`
+const CreateProductMutation = gql`
     mutation createProduct(
     $name: String!,
     $available: Boolean,
@@ -167,16 +139,41 @@ const addProduct = gql`
         }
     }`;
 
-const CreateProductWithMutation = graphql(addProduct, {
+const CreateProductMutationOptions = {
     props: ({ mutate }) => ({
         addProduct: ({ name, available, imageUrl, brandId, nicotineRatesId, categoriesIds }) =>
             mutate({
-                variables: { name, available, imageUrl, brandId, nicotineRatesId, categoriesIds },
-                refetchQueries: [{
-                    query: ListAllProductsQuery
-                }],
+                variables: {
+                    name,
+                    available,
+                    imageUrl,
+                    brandId,
+                    nicotineRatesId,
+                    categoriesIds
+                },
+                refetchQueries: [{ query: ListAllProductsQuery }],
             }),
     }),
-})(CreateProduct);
+};
 
-export default withRouter(CreateProductWithMutation);
+const AllDetailsQuery = gql`query allDetailsQuery {
+    allNicotineRateses {
+        id,
+        name,
+    },
+    allBrands {
+        id,
+        name
+    },
+    allCategories {
+        id,
+        name
+    }
+}`;
+
+const CreateProductWithMutationAndQueries = compose(
+    graphql(CreateProductMutation, CreateProductMutationOptions),
+    graphql(AllDetailsQuery),
+)(CreateProduct);
+
+export default withRouter(CreateProductWithMutationAndQueries);
