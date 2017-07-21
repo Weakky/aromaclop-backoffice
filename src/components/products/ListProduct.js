@@ -64,9 +64,14 @@ class ListProduct extends Component {
             filterable: true,
         },
         {
-            Header: 'TN',
-            accessor: 'nicotineRates.name',
-            Cell: props => <p className='Listproduct-cell'>{props.value}</p>,
+            Header: 'Taxons',
+            accessor: 'productTaxons',
+            Cell: ({ value: taxons }) => (
+                <p className='Listproduct-cell'>
+                    { taxons.map(({ taxon: { name } }) => name ).join(', ')}
+                </p>
+            )
+            ,
             width: 200,
             filterable: true,
         },
@@ -141,9 +146,12 @@ export const ListAllProductsQuery = gql`query allProducts {
         id,
         name,
         imageUrl,
-        nicotineRates { name },
         brand { name },
-        categories { name }
+        categories { name },
+        productTaxons {
+            taxon { name }
+            available
+        }
     }
 }`;
 

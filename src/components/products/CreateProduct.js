@@ -17,7 +17,7 @@ class CreateProduct extends Component {
     initialState = {
         name: '',
         brandId: '',
-        nicotineRatesId: '',
+        taxonsIds: [],
         categoriesIds: [],
         available: false,
         file: null,
@@ -46,7 +46,7 @@ class CreateProduct extends Component {
     render() {
         const { data: {
             allBrands,
-            allNicotineRateses: allNicotineRates,
+            allTaxons,
             allCategories
         } } = this.props;
 
@@ -75,8 +75,8 @@ class CreateProduct extends Component {
                 </label>
                 <label className="Createproduct-label">TN
                     <SelectDetails
-                       data={allNicotineRates}
-                       onSelectedValue={({ value }) => this.setState({ nicotineRatesId: value })}
+                       data={allTaxons}
+                       onSelectedValue={({ value }) => this.setState({ taxonsIds: [...this.state.taxonsIds, value] })}
                     />
                 </label>
                 <label className="Createproduct-label">Catégorie
@@ -105,24 +105,31 @@ class CreateProduct extends Component {
     }
 
     async handlePost() {
-        const { name, available, brandId, nicotineRatesId, categoriesIds } = this.state;
+        const { name, available, brandId, taxonsIds, categoriesIds } = this.state;
         const { data: {
             allBrands,
-            allNicotineRateses: allNicotineRates,
-            allCategories
+            allCategories,
         }} = this.props;
 
         try {
             const { data: { url } } = await this.uploadFile();
 
-            await this.props.addProduct({
+            const {
+                data: {
+                    createProduct: { id: productId }
+                }
+            } = await this.props.addProduct({
                 name,
                 available,
                 imageUrl: url,
                 brandId: brandId ? brandId : allBrands[0].id,
-                nicotineRatesId: nicotineRatesId ? nicotineRatesId : allNicotineRates[0].id,
                 categoriesIds: categoriesIds.length ? categoriesIds : allCategories[0].id,
             });
+
+            await taxonsIds.forEach(async (taxonId) => (
+                await this.props.addAvailability({ taxonId, productId, available: true })
+            ));
+
             this.setState(this.initialState);
             this.props.closeModal();
             this.props.history.push('/Produits');
@@ -143,7 +150,6 @@ const CreateProductMutation = gql`
     $available: Boolean,
     $imageUrl: String!,
     $brandId: ID,
-    $nicotineRatesId: ID,
     $categoriesIds: [ID!],
     ) {
         createProduct(
@@ -151,8 +157,7 @@ const CreateProductMutation = gql`
             available: $available,
             imageUrl: $imageUrl,
             brandId: $brandId,
-            nicotineRatesId: $nicotineRatesId,
-            categoriesIds: $categoriesIds
+            categoriesIds: $categoriesIds,
         ) {
             id
         }
@@ -175,8 +180,36 @@ const CreateProductMutationOptions = {
     }),
 };
 
+const CreateAvailabilityMutation = gql`
+    mutation createAvailability(
+    $productId: ID
+    $taxonId: ID
+    $available: Boolean!
+    ) {
+        createProductTaxons(
+            productId: $productId
+            taxonId: $taxonId
+            available: $available
+        ) {
+            id
+        }
+    }`;
+
+const CreateAvailabilityMutationOptions = {
+    props: ({ mutate }) => ({
+        addAvailability: ({ productId, taxonId, available }) =>
+            mutate({
+                variables: {
+                    productId,
+                    taxonId,
+                    available
+                }
+            }),
+    }),
+};
+
 const AllDetailsQuery = gql`query allDetailsQuery {
-    allNicotineRateses {
+    allTaxons {
         id,
         name,
     },
@@ -191,6 +224,7 @@ const AllDetailsQuery = gql`query allDetailsQuery {
 }`;
 
 const CreateProductWithMutationAndQueries = compose(
+    graphql(CreateAvailabilityMutation, CreateAvailabilityMutationOptions),
     graphql(CreateProductMutation, CreateProductMutationOptions),
     graphql(AllDetailsQuery),
 )(CreateProduct);
