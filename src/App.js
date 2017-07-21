@@ -4,12 +4,13 @@ import Root from './components/Root';
 import Sidebar from './components/Sidebar';
 import SidebarItem from './components/SidebarItem';
 import Main from './components/Main';
+import HomeView from './components/views/HomeView';
 
 import ListProduct from './components/products/ListProduct';
 import CreateProduct from './components/products/CreateProduct';
 import ApolloClient, { createNetworkInterface } from 'apollo-client';
 import { ApolloProvider } from 'react-apollo';
-import { BrowserRouter as Router, Link, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Link, Route, Redirect } from 'react-router-dom';
 
 import './App.css';
 import 'tachyons';
@@ -35,30 +36,20 @@ class App extends Component {
             <Sidebar>
               {
                 tree.map(leaf => (
-                  <SidebarItem key={leaf}>
-                    <Link className="f9 fw1 white link dim" to={`/${leaf}`}>
+                  <Link key={leaf} className="App-link" to={`/${leaf}`}>
+                    <SidebarItem>
                       {leaf}
-                    </Link>
-                  </SidebarItem>
+                    </SidebarItem>
+                    <hr className="App-separator"/>
+                  </Link>
                 ))
               }
             </Sidebar>
             <Main>
-              <Route exact={true} path='/' render={() => (
-                <h1>/</h1>
-              )}/>
-              <Route exact={true} path='/Accueil' render={() => (
-                <h1>Page d'accueil</h1>
-              )}/>
-              <Route exact={true} path='/Produits' render={() => (
-                <div>
-                  <h1>Gestion des produits</h1>
-                  <Link to={'/Produits/list'}>Lister</Link><br />
-                  <Link to={'/Produits/create'}>Ajouter</Link>
-                </div>
-              )}/>
+              <Route exact={true} path='/' render={() => <Redirect from="/" to="/Accueil" />}/>
+              <Route exact={true} path='/Accueil' component={HomeView}/>
+              <Route exact={true} path='/Produits' component={ListProduct}/>
               <Route exact={true} path='/Produits/create' component={CreateProduct}/>
-              <Route exact={true} path='/Produits/list' component={ListProduct}/>
             </Main>
           </Root>
         </Router>

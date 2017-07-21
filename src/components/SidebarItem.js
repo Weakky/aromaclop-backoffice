@@ -1,13 +1,8 @@
 import React from 'react';
+import './styles/sidebarItem.css';
 
 const SidebarItem = ( props ) => (
-    <div style={{
-        whiteSpace: 'nowrap',
-        textOverflow: 'ellipsis',
-        overflow: 'hidden',
-        padding: '5px 10px',
-        fontSize: '16px',
-    }} {...props} />
+    <div className='SidebarItem-item' {...props} />
 );
 
 export default SidebarItem;

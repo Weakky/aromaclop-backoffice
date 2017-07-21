@@ -1,0 +1,10 @@
+.Sidebar-container {
+    width: 15vw;
+    height: 100vh;
+    overflow: auto;
+    background: #0f202e;
+}
+
+.Sidebar-nav {
+    margin-top: 10px;
+}

@@ -1,0 +1,50 @@
+.Listproduct-table {
+    margin: 20px;
+    background-color: #F5F5F5;
+    box-shadow: 1px 1px 5px 1px rgba(0,0,0,0.1); 
+}
+
+.Listproduct-link {
+    margin: 20px 0px 20px 20px;
+    color: #F9F9F9;
+    border-radius: 2px;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.Listproduct-link:hover {
+    background-color: #CC6155 !important;
+}
+
+.Listproduct-buttons {
+    display: flex;
+    flex-direction: row;
+}
+
+.Listproduct-modal {
+    padding: 10px;
+}
+
+.Listproduct-cell {
+    margin: 0;
+    line-height: 60px;
+    font-size: 12px;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.Listproduct-delete {
+    border-radius: 5px;
+    padding: 5px;
+    background-color: #D3746A;
+    cursor: pointer;
+    color: #F9F9F9;
+    line-height: 60px;
+    font-size: 10px;
+    text-transform: uppercase;
+}
+
+.Listproduct-delete:hover {
+    background-color: #D3746A;
+    opacity: 0.5;
+}

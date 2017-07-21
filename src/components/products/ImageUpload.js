@@ -1,5 +1,7 @@
 import React from 'react';
 
+import './styles/imageupload.css';
+
 export default class ImageUpload extends React.Component {
     constructor(props) {
         super(props);
@@ -17,7 +19,7 @@ export default class ImageUpload extends React.Component {
         reader.onloadend = () => {
             this.props.onImageSelected({
                 file: file,
-                imagePreviewUrl: reader.result
+                imagePreviewUrl: reader.result,
             });
             this.setState({ imagePreviewUrl: reader.result });
         };
@@ -28,14 +30,17 @@ export default class ImageUpload extends React.Component {
     render() {
         const { imagePreviewUrl } = this.state;
         const imagePreview = imagePreviewUrl
-            ? ( <img src={imagePreviewUrl}/> )
-            : ( <div className="previewText">Please select an Image for Preview</div> );
+            ? ( <img style={{ margin: 20, height: 100, width: 100}} src={imagePreviewUrl}/> )
+            : ( <div className="Imageupload-previewText">Prévisualisation de l'image..</div> );
 
         return (
             <div className="previewComponent">
-                <input className="fileInput"
+                <label className="Imageupload-label">Image du produit
+                    <input
                        type="file"
-                       onChange={(e)=>this._handleImageChange(e)} />
+                       onChange={(e)=>this._handleImageChange(e)}
+                    />
+                </label>
                 <div className="imgPreview">
                     {imagePreview}
                 </div>

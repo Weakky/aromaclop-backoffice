@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 import axios from 'axios';
 import { withRouter } from 'react-router-dom';
 import { compose, graphql } from 'react-apollo';
@@ -9,22 +9,26 @@ import ImageUpload from './ImageUpload';
 
 import { ListAllProductsQuery } from './ListProduct';
 
-class CreateProduct extends React.Component {
+import './styles/createproduct.css';
+import 'react-select/dist/react-select.css';
+
+class CreateProduct extends Component {
+
+    initialState = {
+        name: '',
+        brandId: '',
+        nicotineRatesId: '',
+        categoriesIds: [],
+        available: false,
+        file: null,
+    };
 
     constructor(props) {
         super(props);
 
-        this.state = {
-            name: '',
-            brandId: '',
-            nicotineRatesId: '',
-            categoriesIds: [],
-            available: false,
-            file: null,
-        };
-
+        this.state = this.initialState;
         this.handlePost = this.handlePost.bind(this);
-    }
+    };
 
     async uploadFile() {
         const { file } = this.state;
@@ -36,8 +40,8 @@ class CreateProduct extends React.Component {
             headers: {
                 'Content-Type': 'multipart/form-data',
             }
-        })
-    }
+        });
+    };
 
     render() {
         const { data: {
@@ -52,41 +56,50 @@ class CreateProduct extends React.Component {
         }
 
         return (
-            <div className='w-100 pa4 flex justify-center'>
-                <div style={{ maxWidth: 400 }} className=''>
+            <div className="Createproduct-container">
+                <label className="Createproduct-label">Nom
                     <input
-                        className='w-100 pa3 mv2'
+                        className="Createproduct-input"
                         value={this.state.name}
-                        placeholder='Name'
+                        placeholder='FR-6'
                         onChange={(e) => this.setState({ name: e.target.value })}
                     />
-                    <span>Product available:</span>
+                </label>
+                <label className="Createproduct-label"> Marque
+                    <SelectDetails
+                       className="Createproduct-select"
+                       style={{width: 100}}
+                       data={allBrands}
+                       onSelectedValue={({ value }) => this.setState({ brandId: value })}
+                    />
+                </label>
+                <label className="Createproduct-label">TN
+                    <SelectDetails
+                       data={allNicotineRates}
+                       onSelectedValue={({ value }) => this.setState({ nicotineRatesId: value })}
+                    />
+                </label>
+                <label className="Createproduct-label">Catégorie
+                    <SelectDetails
+                       data={allCategories}
+                       onSelectedValue={({ value }) => this.setState({ categoriesIds: [value] })}
+                    />
+                </label>
+                <label className="Createproduct-label">En stock<br/>
                     <input
-                        type="checkbox"
-                        className='w-100 pa3 mv2'
-                        value={this.state.available}
-                        placeholder='Available'
-                        onChange={(e) => this.setState({ available: e.target.checked })}
+                      type="checkbox"
+                      value={this.state.available}
+                      placeholder='Available'
+                      onChange={(e) => this.setState({ available: e.target.checked })}
                     />
-                    <SelectDetails label="Select brand:"
-                                   data={allBrands}
-                                   onSelectedValue={({ value }) => this.setState({ brandId: value })}
-                    />
-                    <SelectDetails label="Select nicotine rates:"
-                                   data={allNicotineRates}
-                                   onSelectedValue={({ value }) => this.setState({ nicotineRatesId: value })}
-                    />
-                    <SelectDetails label="Select category:"
-                                   data={allCategories}
-                                   onSelectedValue={({ value }) => this.setState({ categoriesIds: [value] })}
-                    />
-                    <ImageUpload onImageSelected={({ file }) => this.setState({ file })} />
-                    { this.state.name && this.state.file &&
-                    <button className='pa3 bg-black-10 bn dim ttu pointer'
-                            onClick={this.handlePost}> Add product
+                </label>
+                <ImageUpload onImageSelected={({ file }) => this.setState({ file })} />
+                { this.state.name && this.state.file &&
+                    <button
+                        className="Createproduct-button"
+                        onClick={this.handlePost}> Ajouter le produit
                     </button>
-                    }
-                </div>
+                }
             </div>
         );
     }
@@ -110,13 +123,19 @@ class CreateProduct extends React.Component {
                 nicotineRatesId: nicotineRatesId ? nicotineRatesId : allNicotineRates[0].id,
                 categoriesIds: categoriesIds.length ? categoriesIds : allCategories[0].id,
             });
-            this.props.history.push('/Produits/list');
+            this.setState(this.initialState);
+            this.props.closeModal();
+            this.props.history.push('/Produits');
         } catch (e) {
             //TODO: Handle error (could not add product)
             console.log(e);
         }
     }
 }
+
+CreateProduct.PropTypes = {
+    closeModal: PropTypes.func,
+};
 
 const CreateProductMutation = gql`
     mutation createProduct(
