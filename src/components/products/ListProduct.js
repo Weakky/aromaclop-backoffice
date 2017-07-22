@@ -2,12 +2,22 @@ import React, { Component } from 'react';
 import ReactTable from 'react-table';
 import { graphql, compose } from 'react-apollo';
 import gql from 'graphql-tag';
-import {MdAdd, MdRefresh} from 'react-icons/lib/md';
+import { MdAdd, MdRefresh } from 'react-icons/lib/md';
 import Modal from 'react-awesome-modal';
 import CreateProduct from './CreateProduct';
 
 import './styles/listproduct.css';
 import 'react-table/react-table.css';
+
+const filterCaseInsensitive = (filter, row) => {
+    const id = filter.pivotId || filter.id;
+
+    return (
+        row[id]
+            ? String(row[id].toLowerCase()).includes(filter.value.toLowerCase())
+            : true
+    );
+};
 
 class ListProduct extends Component {
 
@@ -135,6 +145,7 @@ class ListProduct extends Component {
                     className='Listproduct-table -highlight'
                     data={this.props.data.allProducts}
                     columns={columns}
+                    defaultFilterMethod={filterCaseInsensitive}
                 />
             </div>
         );
