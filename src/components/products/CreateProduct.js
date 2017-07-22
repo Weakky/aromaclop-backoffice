@@ -19,7 +19,6 @@ class CreateProduct extends Component {
         brandId: '',
         taxonsIds: [],
         categoriesIds: [],
-        available: false,
         file: null,
     };
 
@@ -85,14 +84,6 @@ class CreateProduct extends Component {
                        onSelectedValue={({ value }) => this.setState({ categoriesIds: [value] })}
                     />
                 </label>
-                <label className="Createproduct-label">En stock<br/>
-                    <input
-                      type="checkbox"
-                      value={this.state.available}
-                      placeholder='Available'
-                      onChange={(e) => this.setState({ available: e.target.checked })}
-                    />
-                </label>
                 <ImageUpload onImageSelected={({ file }) => this.setState({ file })} />
                 { this.state.name && this.state.file &&
                     <button
@@ -105,7 +96,7 @@ class CreateProduct extends Component {
     }
 
     async handlePost() {
-        const { name, available, brandId, taxonsIds, categoriesIds } = this.state;
+        const { name, brandId, taxonsIds, categoriesIds } = this.state;
         const { data: {
             allBrands,
             allCategories,
@@ -120,7 +111,6 @@ class CreateProduct extends Component {
                 }
             } = await this.props.addProduct({
                 name,
-                available,
                 imageUrl: url,
                 brandId: brandId ? brandId : allBrands[0].id,
                 categoriesIds: categoriesIds.length ? categoriesIds : allCategories[0].id,
@@ -147,14 +137,12 @@ CreateProduct.PropTypes = {
 const CreateProductMutation = gql`
     mutation createProduct(
     $name: String!,
-    $available: Boolean,
     $imageUrl: String!,
     $brandId: ID,
     $categoriesIds: [ID!],
     ) {
         createProduct(
             name: $name,
-            available: $available,
             imageUrl: $imageUrl,
             brandId: $brandId,
             categoriesIds: $categoriesIds,
@@ -165,14 +153,12 @@ const CreateProductMutation = gql`
 
 const CreateProductMutationOptions = {
     props: ({ mutate }) => ({
-        addProduct: ({ name, available, imageUrl, brandId, nicotineRatesId, categoriesIds }) =>
+        addProduct: ({ name, imageUrl, brandId, categoriesIds }) =>
             mutate({
                 variables: {
                     name,
-                    available,
                     imageUrl,
                     brandId,
-                    nicotineRatesId,
                     categoriesIds
                 },
                 refetchQueries: [{ query: ListAllProductsQuery }],
