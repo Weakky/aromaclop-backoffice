@@ -39,13 +39,12 @@ export default class ImageUpload extends React.Component {
             : ( <div className="Imageupload-previewText">Prévisualisation de l'image..</div> );
 
         return (
-            <div className="previewComponent">
-                <label className="Imageupload-label">Image du produit
+            <div className="Imageupload-container">
+                <label className="Imageupload-label">Image du produit</label>
                     <input
                        type="file"
                        onChange={(e)=>this._handleImageChange(e)}
                     />
-                </label>
                 <div className="imgPreview">
                     {imagePreview}
                 </div>

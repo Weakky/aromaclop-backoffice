@@ -31,20 +31,38 @@
     font-size: 12px;
     text-align: center;
     text-transform: uppercase;
+    margin-left: 5px;
+}
+
+.Listproduct-vignette {
+    line-height: 60px;
+    background-color: #0F202E;
+    font-size: 11px;
+    font-weight: bold; 
+    text-transform: 'uppercase';
+    margin: 5px;
+    padding: 5px; 
+    color: #F9F9F9;
+    border-radius: 2px;
+}
+
+.Listproduct-cell-container {
+    flex: 1;
+    flex-direction: row;
+    text-align: center;
 }
 
 .Listproduct-delete {
-    border-radius: 5px;
+    border-radius: 2px;
     padding: 5px;
-    background-color: #D3746A;
+    background-color: #CC6155;
     cursor: pointer;
     color: #F9F9F9;
     line-height: 60px;
-    font-size: 10px;
-    text-transform: uppercase;
+    font-size: 12px;
 }
 
 .Listproduct-delete:hover {
     background-color: #D3746A;
-    opacity: 0.5;
+    opacity: 0.9;
 }

@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 import { compose, graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 
-import SelectDetails from './SelectDetails';
+import Select from 'react-select';
 import ImageUpload from './ImageUpload';
 
 import { ListAllProductsQuery } from './ListProduct';
@@ -29,6 +29,11 @@ class CreateProduct extends Component {
         this.handlePost = this.handlePost.bind(this);
     };
 
+    handleTaxonAvailability(taxon) {
+        taxon.available = !taxon.available;
+        this.setState({ taxonsIds: this.state.taxonsIds, taxon });
+    };
+
     async uploadFile() {
         const { file } = this.state;
         const data = new FormData();
@@ -49,10 +54,14 @@ class CreateProduct extends Component {
             allCategories
         } } = this.props;
 
-
         if (this.props.data.loading) {
             return <div>Loading...</div>
-        }
+        };
+
+        // Options pour le select à multiples choix
+        const taxons = allTaxons.map((taxon) => ({ label: taxon.name, value: taxon.id, available: true }));
+        const brands = allBrands.map((brand) => ({ label: brand.name, value: brand.id}));
+        const categories = allCategories.map((categorie) => ({ label: categorie.name, value: categorie.id}));
 
         return (
             <div className="Createproduct-container">
@@ -65,23 +74,49 @@ class CreateProduct extends Component {
                     />
                 </label>
                 <label className="Createproduct-label"> Marque
-                    <SelectDetails
-                       className="Createproduct-select"
-                       style={{width: 100}}
-                       data={allBrands}
-                       onSelectedValue={({ value }) => this.setState({ brandId: value })}
+                    <Select
+                       placeholder='...'
+                       value={this.state.brandId}
+                       options={brands}
+                       clearable={false}
+                       onChange={(target) => this.setState({ brandId: target.value})}
                     />
                 </label>
-                <label className="Createproduct-label">TN
-                    <SelectDetails
-                       data={allTaxons}
-                       onSelectedValue={({ value }) => this.setState({ taxonsIds: [...this.state.taxonsIds, value] })}
+                <label className="Createproduct-label">Taxons
+                    <Select
+                       placeholder='...'
+                       multi
+                       value={this.state.taxonsIds}
+                       options={taxons}
+                       onChange={(targets) => this.setState({ taxonsIds: targets.map((target) => target)})}
                     />
                 </label>
+                {
+                    this.state.taxonsIds.length > 0 && (
+                        <div className="Createproduct-switch-container">
+                            <label className="Createproduct-label">Disponibilitées<br />
+                            { 
+                                this.state.taxonsIds.map((taxon, k) => (
+                                    <span 
+                                        onClick={() => this.handleTaxonAvailability(taxon)} 
+                                        className="Createproduct-switch" 
+                                        style={{backgroundColor: taxon.available ? '#1abc9c' : '#D3746A'}}
+                                        key={k}>{taxon.label}
+                                    </span>
+                                ))
+                            }
+                            </label>
+                        </div>
+                    )
+                }
                 <label className="Createproduct-label">Catégorie
-                    <SelectDetails
-                       data={allCategories}
-                       onSelectedValue={({ value }) => this.setState({ categoriesIds: [value] })}
+                    <Select
+                       placeholder='...'
+                       multi
+                       value={this.state.categoriesIds}
+                       options={categories}
+                       clearable={false}
+                       onChange={(targets) => this.setState({ categoriesIds: targets.map((target) => target.value)})}
                     />
                 </label>
                 <ImageUpload onImageSelected={({ file }) => this.setState({ file })} />
@@ -96,6 +131,7 @@ class CreateProduct extends Component {
     }
 
     async handlePost() {
+        this.props.closeModal();
         const { name, brandId, taxonsIds, categoriesIds } = this.state;
         const { data: {
             allBrands,
@@ -113,15 +149,13 @@ class CreateProduct extends Component {
                 name,
                 imageUrl: url,
                 brandId: brandId ? brandId : allBrands[0].id,
-                categoriesIds: categoriesIds.length ? categoriesIds : allCategories[0].id,
+                categoriesIds: categoriesIds.length > 0 ? categoriesIds : allCategories[0].id,
             });
 
             await taxonsIds.forEach(async (taxonId) => (
-                await this.props.addAvailability({ taxonId, productId, available: true })
+                await this.props.addAvailability({ taxonId: taxonId.value, productId, available: taxonId.available })
             ));
-
             this.setState(this.initialState);
-            this.props.closeModal();
             this.props.history.push('/Produits');
         } catch (e) {
             //TODO: Handle error (could not add product)
@@ -159,7 +193,7 @@ const CreateProductMutationOptions = {
                     name,
                     imageUrl,
                     brandId,
-                    categoriesIds
+                    categoriesIds,
                 },
                 refetchQueries: [{ query: ListAllProductsQuery }],
             }),
@@ -188,7 +222,7 @@ const CreateAvailabilityMutationOptions = {
                 variables: {
                     productId,
                     taxonId,
-                    available
+                    available,
                 }
             }),
     }),

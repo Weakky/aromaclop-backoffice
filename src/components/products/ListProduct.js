@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import ReactTable from 'react-table';
 import { graphql, compose } from 'react-apollo';
 import gql from 'graphql-tag';
-import { MdAdd, MdRefresh } from 'react-icons/lib/md';
+import { MdAdd, MdRefresh, MdClose} from 'react-icons/lib/md';
 import Modal from 'react-awesome-modal';
 import CreateProduct from './CreateProduct';
 
@@ -63,46 +63,74 @@ class ListProduct extends Component {
             Header: 'ID',
             accessor: 'id',
             Cell: props => <p className='Listproduct-cell' style={{ fontWeight: 'bold' }}>{props.value}</p>,
-            width: 300,
             filterable: true,
+            width: 250,
         },
         {
             Header: 'Nom',
             accessor: 'name',
             Cell: props => <p className='Listproduct-cell'>{props.value}</p>,
-            width: 200,
-            filterable: true,
-        },
-        {
-            Header: 'Taxons',
-            accessor: 'productTaxons',
-            Cell: ({ value: taxons }) => (
-                <p className='Listproduct-cell'>
-                    { taxons.map(({ taxon: { name } }) => name ).join(', ')}
-                </p>
-            )
-            ,
-            width: 200,
             filterable: true,
         },
         {
             Header: 'Marque',
             accessor: 'brand.name',
             Cell: props => <p className='Listproduct-cell'>{props.value}</p>,
-            width: 200,
             filterable: true,
         },
         {
             Header: 'Catégorie',
-            accessor: 'categories[0].name',
-            Cell: props => <p className='Listproduct-cell'>{props.value}</p>,
-            width: 200,
-            filterable: true,
+            accessor: 'categories',
+            Cell: (props) => (
+                <div className="Listproduct-cell-container">
+                    {props.original.categories.map((prop, k) => (
+                        <span 
+                            key={k} 
+                            className="Listproduct-vignette"
+                        >
+                            {prop.name}
+                        </span>
+                    ))}
+                </div> 
+            ),
+           
+            filterable: false,
         },
         {
-            Cell: props => <p style={{ textAlign: 'center', margin: 0}}>
-                                <span onClick={() => this.handleDelete(props.row.id)} className='Listproduct-delete'>Supprimer</span>
-                            </p>,
+            Header: 'Taxons',
+            width: 250,
+            accessor: 'productTaxons',
+            Cell: ({ value: taxons }) => (
+                <div className="Listproduct-cell-container">
+                {
+                    taxons.map((taxon, i) => (
+                        <span 
+                            style={{ backgroundColor: taxon.available ? '#1abc9c' : '#d3746a' }} 
+                            className="Listproduct-vignette"
+                            key={i}
+                        >
+                            {taxon.taxon.name}
+                        </span>
+                    ))
+                }
+                </div>
+            )
+            ,
+            filterable: false,
+            sortable: false,
+        },
+        {
+        
+            Cell: props => (
+                <p style={{ textAlign: 'center', margin: 0}}>
+                    <span 
+                        onClick={() => this.handleDelete(props.row.id)} 
+                        className='Listproduct-delete'
+                    >
+                        <MdClose/>
+                    </span>
+                </p>
+            ),
         },
     ];
 
