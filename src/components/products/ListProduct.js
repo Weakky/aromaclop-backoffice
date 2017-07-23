@@ -26,6 +26,7 @@ class ListProduct extends Component {
 
         this.state = {
             visible: false,
+            loading: false,
         };
 
         this.handleDelete = this.handleDelete.bind(this);
@@ -48,7 +49,8 @@ class ListProduct extends Component {
     };
 
     async handleRefresh() {
-        await this.props.data.refetch();
+        this.setState({ loading: true });
+        await this.props.data.refetch().then(() => this.setState({loading: false}));
     };
 
     render() {
@@ -93,7 +95,6 @@ class ListProduct extends Component {
                     ))}
                 </div> 
             ),
-           
             filterable: false,
         },
         {
@@ -169,6 +170,7 @@ class ListProduct extends Component {
                     </div>
                 </div>
                 <ReactTable
+                    loadingText='Rafraichissement des données..'
                     loading={this.state.loading}
                     noDataText='Chargement des données..'
                     className='Listproduct-table -highlight'
