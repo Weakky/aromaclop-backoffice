@@ -11,6 +11,7 @@ import CreateProduct from './components/products/CreateProduct';
 import ApolloClient, { createNetworkInterface } from 'apollo-client';
 import { ApolloProvider } from 'react-apollo';
 import { BrowserRouter as Router, Link, Route, Redirect } from 'react-router-dom';
+import { MdHome, MdViewHeadline, MdShoppingCart} from 'react-icons/lib/md';
 
 import './App.css';
 import 'tachyons';
@@ -27,7 +28,21 @@ const client = new ApolloClient({
 class App extends Component {
 
   render() {
-    const tree = ['Accueil', 'Produits'];
+    //const tree = ['Accueil', 'Produits', 'Commandes'];
+    const tree = [
+      {
+        name: 'Accueil',
+        icon: <MdHome className="App-icon"/>,
+      },
+      {
+        name: 'Produits',
+        icon: <MdViewHeadline className="App-icon"/>,
+      },
+      {
+        name: 'Commandes',
+        icon: <MdShoppingCart className="App-icon"/>,
+      },
+    ];
 
     return (
       <ApolloProvider client={client}>
@@ -36,9 +51,9 @@ class App extends Component {
             <Sidebar>
               {
                 tree.map(leaf => (
-                  <Link key={leaf} className="App-link" to={`/${leaf}`}>
+                  <Link key={leaf.name} className="App-link" to={`/${leaf.name}`}>
                     <SidebarItem>
-                      {leaf}
+                      {leaf.icon}{leaf.name}
                     </SidebarItem>
                     <hr className="App-separator"/>
                   </Link>
