@@ -7,7 +7,7 @@ const Main = ( props ) => (
         overflow: 'auto',
         backgroundColor: '#FFF',
     }}>
-        <div style={{ padding: 20 }}{...props} />
+        <div style={{ margin: 20 }}{...props} />
     </div>
 );
 

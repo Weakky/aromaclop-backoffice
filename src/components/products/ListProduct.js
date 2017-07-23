@@ -170,10 +170,14 @@ class ListProduct extends Component {
                 </div>
                 <ReactTable
                     loading={this.state.loading}
+                    noDataText='Chargement des données..'
                     className='Listproduct-table -highlight'
                     data={this.props.data.allProducts}
                     columns={columns}
                     defaultFilterMethod={filterCaseInsensitive}
+                    style={{
+                        height: '90vh'
+                    }}
                 />
             </div>
         );
