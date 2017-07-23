@@ -1,13 +1,13 @@
 .Createproduct-container {
-    margin: 10px;
+    margin: 0 10px 0 10px;
 }
 
 .Createproduct-input {
-    width: 99%;
+    width: 96%;
     height: 34px;
     border: 1px solid rgba(0, 0, 0, 0.2);
     border-radius: 4px;
-    text-align: center;
+    padding-left: 10px;
 }
 
 .Createproduct-label {

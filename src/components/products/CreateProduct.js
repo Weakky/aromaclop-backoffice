@@ -70,7 +70,7 @@ class CreateProduct extends Component {
                     <input
                         className="Createproduct-input"
                         value={this.state.name}
-                        placeholder='FR-6'
+                        placeholder='...'
                         onChange={(e) => this.setState({ name: e.target.value })}
                     />
                 </label>

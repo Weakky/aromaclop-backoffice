@@ -66,3 +66,17 @@
     background-color: #D3746A;
     opacity: 0.9;
 }
+
+.Listproduct-header-modal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #0F202E;
+    height: 50px;
+    border-radius: 5px 5px 0 0;
+}
+
+.Listproduct-header-label {
+    color: #F9F9F9;
+    font-size: 14px;
+}

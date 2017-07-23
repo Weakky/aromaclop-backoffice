@@ -105,7 +105,7 @@ class ListProduct extends Component {
                 <div className="Listproduct-cell-container">
                 {
                     taxons.map((taxon, i) => (
-                        <span 
+                        <span
                             style={{ backgroundColor: taxon.available ? '#1abc9c' : '#d3746a' }} 
                             className="Listproduct-vignette"
                             key={i}
@@ -140,10 +140,13 @@ class ListProduct extends Component {
                 <Modal
                     visible={this.state.visible}
                     width="400"
-                    height="600"
+                    height="620"
                     effect="fadeInUp"
                     onClickAway={() => this.closeModal()}
                 >
+                    <div className="Listproduct-header-modal">
+                        <span className="Listproduct-header-label">Création d'un produit</span>
+                    </div>
                     <div className="Listproduct-modal">
                         <CreateProduct closeModal={this.closeModal}/>
                     </div>

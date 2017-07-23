@@ -36,7 +36,7 @@ export default class ImageUpload extends React.Component {
     render() {
         const { imagePreviewUrl } = this.state;
         const imagePreview = imagePreviewUrl
-            ? ( <img alt='preview' style={{ margin: 20, height: 100, width: 100}} src={imagePreviewUrl}/> )
+            ? ( <img alt='preview' style={{ margin: 20, height: 60, width: 60}} src={imagePreviewUrl}/> )
             : ( <div className="Imageupload-previewText">Prévisualisation de l'image..</div> );
 
         return (
