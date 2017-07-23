@@ -1,4 +1,5 @@
 import React from 'react';
+import proptypes from 'prop-types';
 
 import './styles/imageupload.css';
 
@@ -35,7 +36,7 @@ export default class ImageUpload extends React.Component {
     render() {
         const { imagePreviewUrl } = this.state;
         const imagePreview = imagePreviewUrl
-            ? ( <img style={{ margin: 20, height: 100, width: 100}} src={imagePreviewUrl}/> )
+            ? ( <img alt='preview' style={{ margin: 20, height: 100, width: 100}} src={imagePreviewUrl}/> )
             : ( <div className="Imageupload-previewText">Prévisualisation de l'image..</div> );
 
         return (
@@ -53,6 +54,6 @@ export default class ImageUpload extends React.Component {
     }
 }
 
-ImageUpload.propTypes = {
-    onImageSelected: React.PropTypes.func,
+ImageUpload.proptypes = {
+    onImageSelected: proptypes.func,
 };

@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import proptypes from 'prop-types';
 import axios from 'axios';
 import { withRouter } from 'react-router-dom';
 import { compose, graphql } from 'react-apollo';
@@ -164,8 +165,8 @@ class CreateProduct extends Component {
     }
 }
 
-CreateProduct.PropTypes = {
-    closeModal: PropTypes.func,
+CreateProduct.proptypes = {
+    closeModal: proptypes.func,
 };
 
 const CreateProductMutation = gql`

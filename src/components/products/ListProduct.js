@@ -56,7 +56,7 @@ class ListProduct extends Component {
     const columns = [
         {
             accessor: 'imageUrl',
-            Cell: props => <img style={{ height: 60, width: 60 }} src={props.value}/>,
+            Cell: props => <img alt='product' style={{ height: 60, width: 60 }} src={props.value}/>,
             width: 75,
         },
         {
