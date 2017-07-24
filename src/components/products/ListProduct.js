@@ -169,7 +169,7 @@ class ListProduct extends Component {
                             className='Listproduct-link'
                             onClick={() => this.openModal()}>
                             <MdAdd className="ListProduct-icon" size={18}/>
-                            <span className="Listproduct-link-label">Ajouter</span>
+                            <span className="Listproduct-link-label">Ajouter un produit</span>
                         </span>
                     </div>
                 </div>
@@ -182,7 +182,7 @@ class ListProduct extends Component {
                     columns={columns}
                     defaultFilterMethod={filterCaseInsensitive}
                     style={{
-                        height: '90vh'
+                        height: '91vh'
                     }}
                 />
             </div>

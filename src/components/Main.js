@@ -5,7 +5,7 @@ const Main = ( props ) => (
         flex: 1,
         height: '100vh',
         overflow: 'auto',
-        backgroundColor: '#FFF',
+        backgroundColor: '#F9F9F9',
     }}>
         <div {...props} />
     </div>
