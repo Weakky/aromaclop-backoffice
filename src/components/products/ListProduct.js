@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import ReactTable from 'react-table';
 import { graphql, compose } from 'react-apollo';
 import gql from 'graphql-tag';
-import { MdAdd, MdRefresh, MdClose} from 'react-icons/lib/md';
+import { MdAdd, MdRefresh, MdClose, MdCreate } from 'react-icons/lib/md';
 import Modal from 'react-awesome-modal';
 import CreateProduct from './CreateProduct';
 
@@ -27,6 +27,7 @@ class ListProduct extends Component {
         this.state = {
             visible: false,
             loading: false,
+            editable: false,
         };
 
         this.handleDelete = this.handleDelete.bind(this);
@@ -108,9 +109,13 @@ class ListProduct extends Component {
                 {
                     taxons.map((taxon, i) => (
                         <span
-                            style={{ backgroundColor: taxon.available ? '#1abc9c' : '#d3746a' }} 
+                            style={{ 
+                                backgroundColor: taxon.available ? '#1abc9c' : '#d3746a',
+                                cursor: this.state.editable && 'pointer',
+                            }} 
                             className="Listproduct-vignette"
                             key={i}
+                            onClick={() => this.state.editable && console.log('Request ->', taxon)}
                         >
                             {taxon.taxon.name}
                         </span>
@@ -156,12 +161,32 @@ class ListProduct extends Component {
                 <div className='Listproduct-buttons'>
                     <div className='Listproduct-button'>
                         <span
-                            style={{ backgroundColor: '#CC6155'}}
+                            style={{ backgroundColor: '#1abc9c'}}
                             className='Listproduct-link'
                             onClick={() => this.handleRefresh()}>
                                 <MdRefresh className="ListProduct-icon" size={18}/>
                                 <span className="Listproduct-link-label">Rafraichir les produits</span>
                         </span>
+                    </div>
+                    <div className='Listproduct-button'>
+                        {
+                            !this.state.editable ?
+                                <span
+                                    style={{ backgroundColor: '#1abc9c'}}
+                                    className='Listproduct-link'
+                                    onClick={() => this.setState({ editable: true })}>
+                                        <MdCreate className="ListProduct-icon" size={18}/>
+                                        <span className="Listproduct-link-label">Activer le mode édition</span>
+                                </span>
+                            :
+                                 <span
+                                    style={{ backgroundColor: '#CC6155'}}
+                                    className='Listproduct-link'
+                                    onClick={() => this.setState({ editable: false })}>
+                                        <MdCreate className="ListProduct-icon" size={18}/>
+                                        <span className="Listproduct-link-label">Quitter le mode édition</span>
+                                </span>
+                        }
                     </div>
                     <div className='Listproduct-button'>
                         <span
