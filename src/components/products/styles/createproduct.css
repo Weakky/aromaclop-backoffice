@@ -23,7 +23,9 @@
     background-color: #1abc9c;
     color: #F9F9F9;
     border-radius: 5px;
-    font-size: 14px;
+    font-size: 12px;
+    text-transform: uppercase;
+    font-weight: bold;
 }
 
 .Createproduct-button:hover {

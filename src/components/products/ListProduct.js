@@ -73,12 +73,14 @@ class ListProduct extends Component {
             accessor: 'name',
             Cell: props => <p className='Listproduct-cell'>{props.value}</p>,
             filterable: true,
+            width: 250,
         },
         {
             Header: 'Marque',
             accessor: 'brand.name',
             Cell: props => <p className='Listproduct-cell'>{props.value}</p>,
             filterable: true,
+            width: 250,
         },
         {
             Header: 'Catégorie',
@@ -121,7 +123,7 @@ class ListProduct extends Component {
             sortable: false,
         },
         {
-        
+            width: 78,
             Cell: props => (
                 <p style={{ textAlign: 'center', margin: 0}}>
                     <span 
@@ -145,7 +147,7 @@ class ListProduct extends Component {
                     onClickAway={() => this.closeModal()}
                 >
                     <div className="Listproduct-header-modal">
-                        <span className="Listproduct-header-label">Création d'un produit</span>
+                        <MdAdd style={{ color: '#F9F9F9', marginRight: 5 }}size={16}/><span className="Listproduct-header-label">Ajout d'un produit</span>
                     </div>
                     <div className="Listproduct-modal">
                         <CreateProduct closeModal={this.closeModal}/>
@@ -154,13 +156,11 @@ class ListProduct extends Component {
                 <div className='Listproduct-buttons'>
                     <div className='Listproduct-button'>
                         <span
-                            style={{ backgroundColor: '#0F202E'}}
+                            style={{ backgroundColor: '#CC6155'}}
                             className='Listproduct-link'
                             onClick={() => this.handleRefresh()}>
-                                <MdRefresh
-                                    className="ListProduct-icon"
-                                    size={25}
-                                />
+                                <MdRefresh className="ListProduct-icon" size={18}/>
+                                <span className="Listproduct-link-label">Rafraichir les produits</span>
                         </span>
                     </div>
                     <div className='Listproduct-button'>
@@ -168,7 +168,8 @@ class ListProduct extends Component {
                             style={{ backgroundColor: '#1abc9c'}}
                             className='Listproduct-link'
                             onClick={() => this.openModal()}>
-                            <MdAdd className="ListProduct-icon" size={25}/>
+                            <MdAdd className="ListProduct-icon" size={18}/>
+                            <span className="Listproduct-link-label">Ajouter</span>
                         </span>
                     </div>
                 </div>

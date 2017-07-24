@@ -9,6 +9,7 @@ import Select from 'react-select';
 import ImageUpload from './ImageUpload';
 
 import { ListAllProductsQuery } from './ListProduct';
+import { MdAdd } from 'react-icons/lib/md';
 
 import './styles/createproduct.css';
 import 'react-select/dist/react-select.css';
