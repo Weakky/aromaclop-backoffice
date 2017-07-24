@@ -63,7 +63,6 @@ class App extends Component {
               <Route exact={true} path='/' render={() => <Redirect from="/" to="/Overview" />}/>
               <Route exact={true} path='/Overview' component={HomeView}/>
               <Route exact={true} path='/Produits' component={ListProduct}/>
-              <Route exact={true} path='/Produits/create' component={CreateProduct}/>
             </Main>
           </Root>
         </Router>
