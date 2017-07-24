@@ -31,9 +31,10 @@ class CreateProduct extends Component {
         this.handlePost = this.handlePost.bind(this);
     };
 
-    handleTaxonAvailability(taxon) {
-        taxon.available = !taxon.available;
-        this.setState({ taxonsIds: this.state.taxonsIds, taxon });
+    handleTaxonProductTaxons(taxon) {
+        this.setState({
+            taxonsIds: this.state.taxonsIds,
+            taxon: !taxon.available });
     };
 
     async uploadFile() {
@@ -58,7 +59,7 @@ class CreateProduct extends Component {
 
         if (this.props.data.loading) {
             return <div>Loading...</div>
-        };
+        }
 
         // Options pour le select à multiples choix
         const taxons = allTaxons.map((taxon) => ({ label: taxon.name, value: taxon.id, available: true }));
@@ -100,7 +101,7 @@ class CreateProduct extends Component {
                             { 
                                 this.state.taxonsIds.map((taxon, k) => (
                                     <span 
-                                        onClick={() => this.handleTaxonAvailability(taxon)} 
+                                        onClick={() => this.handleTaxonProductTaxons(taxon)}
                                         className="Createproduct-switch" 
                                         style={{backgroundColor: taxon.available ? '#1abc9c' : '#D3746A'}}
                                         key={k}>{taxon.label}
@@ -155,7 +156,7 @@ class CreateProduct extends Component {
             });
 
             await taxonsIds.forEach(async (taxonId) => (
-                await this.props.addAvailability({ taxonId: taxonId.value, productId, available: taxonId.available })
+                await this.props.addProductTaxons({ taxonId: taxonId.value, productId, available: taxonId.available })
             ));
             this.setState(this.initialState);
             this.props.history.push('/Produits');
@@ -184,6 +185,11 @@ const CreateProductMutation = gql`
             categoriesIds: $categoriesIds,
         ) {
             id
+            name
+            categories { name }
+            brand { name }
+            imageUrl
+            productTaxons { available, taxon { name } }
         }
     }`;
 
@@ -197,13 +203,18 @@ const CreateProductMutationOptions = {
                     brandId,
                     categoriesIds,
                 },
-                refetchQueries: [{ query: ListAllProductsQuery }],
+                update: (store, { data: { createProduct } }) => {
+                    const data = store.readQuery({ query: ListAllProductsQuery });
+
+                    data.allProducts.push(createProduct);
+                    store.writeQuery({ query: ListAllProductsQuery, data });
+                },
             }),
     }),
 };
 
-const CreateAvailabilityMutation = gql`
-    mutation createAvailability(
+const CreateProductTaxonsMutation = gql`
+    mutation createProductTaxons(
     $productId: ID
     $taxonId: ID
     $available: Boolean!
@@ -214,19 +225,36 @@ const CreateAvailabilityMutation = gql`
             available: $available
         ) {
             id
+            available
+            taxon { name }
         }
     }`;
 
-const CreateAvailabilityMutationOptions = {
+const CreateProductTaxonsMutationOptions = {
     props: ({ mutate }) => ({
-        addAvailability: ({ productId, taxonId, available }) =>
+        addProductTaxons: ({ productId, taxonId, available }) =>
             mutate({
                 variables: {
                     productId,
                     taxonId,
                     available,
+                },
+                update: (store, { data: { createProductTaxons } }) => {
+                    const data = store.readQuery({ query: ListAllProductsQuery });
+
+                    data.allProducts = data.allProducts.map((product) => {
+                        if (product.id === productId) {
+                            return {
+                                ...product,
+                                productTaxons: [...product.productTaxons, createProductTaxons],
+                            }
+                        }
+                        return product;
+                    });
+
+                    store.writeQuery({ query: ListAllProductsQuery, data});
                 }
-            }),
+            })
     }),
 };
 
@@ -246,7 +274,7 @@ const AllDetailsQuery = gql`query allDetailsQuery {
 }`;
 
 const CreateProductWithMutationAndQueries = compose(
-    graphql(CreateAvailabilityMutation, CreateAvailabilityMutationOptions),
+    graphql(CreateProductTaxonsMutation, CreateProductTaxonsMutationOptions),
     graphql(CreateProductMutation, CreateProductMutationOptions),
     graphql(AllDetailsQuery),
 )(CreateProduct);
