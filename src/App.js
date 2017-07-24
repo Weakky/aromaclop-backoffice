@@ -10,8 +10,8 @@ import ListProduct from './components/products/ListProduct';
 import CreateProduct from './components/products/CreateProduct';
 import ApolloClient, { createNetworkInterface } from 'apollo-client';
 import { ApolloProvider } from 'react-apollo';
-import { BrowserRouter as Router, Link, Route, Redirect } from 'react-router-dom';
-import { MdHome, MdViewHeadline, MdShoppingCart} from 'react-icons/lib/md';
+import { BrowserRouter as Router, Route, Redirect, NavLink } from 'react-router-dom';
+import { MdEqualizer, MdReorder, MdShoppingCart} from 'react-icons/lib/md';
 
 import './App.css';
 import 'tachyons';
@@ -28,19 +28,19 @@ const client = new ApolloClient({
 class App extends Component {
 
   render() {
-    //const tree = ['Accueil', 'Produits', 'Commandes'];
+
     const tree = [
       {
-        name: 'Accueil',
-        icon: <MdHome className="App-icon"/>,
+        name: 'Overview',
+        icon: <MdEqualizer size={18} className="App-icon"/>,
       },
       {
         name: 'Produits',
-        icon: <MdViewHeadline className="App-icon"/>,
+        icon: <MdReorder size={18} className="App-icon"/>,
       },
       {
         name: 'Commandes',
-        icon: <MdShoppingCart className="App-icon"/>,
+        icon: <MdShoppingCart size={18} className="App-icon"/>,
       },
     ];
 
@@ -51,18 +51,17 @@ class App extends Component {
             <Sidebar>
               {
                 tree.map(leaf => (
-                  <Link key={leaf.name} className="App-link" to={`/${leaf.name}`}>
-                    <SidebarItem>
-                      {leaf.icon}{leaf.name}
-                    </SidebarItem>
-                    <hr className="App-separator"/>
-                  </Link>
+                  <SidebarItem key={leaf.name}>
+                    <NavLink activeClassName="App-link-active" className="App-link" to={`/${leaf.name}`}>              
+                        {leaf.icon}<span className="App-link-label">{leaf.name}</span>
+                    </NavLink>
+                  </SidebarItem>
                 ))
               }
             </Sidebar>
             <Main>
-              <Route exact={true} path='/' render={() => <Redirect from="/" to="/Accueil" />}/>
-              <Route exact={true} path='/Accueil' component={HomeView}/>
+              <Route exact={true} path='/' render={() => <Redirect from="/" to="/Overview" />}/>
+              <Route exact={true} path='/Overview' component={HomeView}/>
               <Route exact={true} path='/Produits' component={ListProduct}/>
               <Route exact={true} path='/Produits/create' component={CreateProduct}/>
             </Main>

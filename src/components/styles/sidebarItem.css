@@ -1,9 +1,8 @@
 .SidebarItem-item {
     display: flex;
     align-items: center;
-    color: #F9F9F9;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-    margin-left: 20px;
+    text-transform: uppercase;
 }
