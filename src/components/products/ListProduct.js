@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import ReactTable from 'react-table';
-import { graphql, compose } from 'react-apollo';
+import bluebird from 'bluebird';
+import { compose, graphql } from 'react-apollo';
 import gql from 'graphql-tag';
-import { MdAdd, MdRefresh, MdClose, MdCreate } from 'react-icons/lib/md';
+import { MdAdd, MdClose, MdCreate, MdRefresh } from 'react-icons/lib/md';
 import Modal from 'react-awesome-modal';
 import CreateProduct from './CreateProduct';
 
@@ -28,12 +29,14 @@ class ListProduct extends Component {
             visible: false,
             loading: false,
             editable: false,
+            edited: {}
         };
 
         this.handleDelete = this.handleDelete.bind(this);
         this.handleRefresh = this.handleRefresh.bind(this);
         this.closeModal = this.closeModal.bind(this);
         this.openModal = this.openModal.bind(this);
+        this.applyTaxonsChanges = this.applyTaxonsChanges.bind(this);
     }
 
     openModal() {
@@ -53,6 +56,84 @@ class ListProduct extends Component {
         this.setState({ loading: true });
         await this.props.data.refetch().then(() => this.setState({loading: false}));
     };
+
+    updateTaxons(taxon) {
+        if (this.state.editable) {
+            this.setState({
+                edited: {
+                    ...this.state.edited,
+                    [taxon.product.id]: {
+                        ...this.state.edited[taxon.product.id],
+                        [taxon.id]: {
+                            productName: taxon.product.name,
+                            name: taxon.taxon.name,
+                            id: taxon.id.name,
+                            available: this.editedTaxonAvailable(taxon)
+                                ? !this.editedTaxonAvailable(taxon).available
+                                : !taxon.available
+                        }
+                    }
+                }
+            })
+        }
+    }
+
+    editedTaxonAvailable(taxon) {
+        return this.state.edited[taxon.product.id] &&
+            this.state.edited[taxon.product.id][taxon.id];
+    }
+
+    taxonBackgroundColor(taxon) {
+        if (this.editedTaxonAvailable(taxon)) {
+            return this.editedTaxonAvailable(taxon).available ? '#1abc9c' : '#d3746a';
+        }
+
+        return taxon.available ? '#1abc9c' : '#d3746a';
+    }
+
+    //TODO: Call this function when rendering the modal showing the updates that are going to be validated.
+    //TODO: Idea: Render additions in green, deletions in red, per product. Something like:
+    //                 FR-M:
+    //                      + 0mg sera disponible
+    //                      + 6mg sera disponible
+    //                      - 11mg sera plus disponible
+    //                      - 16mg sera plus disponible
+    //                 FR-K:
+    //                      ...
+    taxonsUpdatedMessage() {
+        const updatedProductsIds = Object.keys(this.state.edited);
+
+        updatedProductsIds.forEach((productId) => {
+            const updatedTaxonsIds = Object.keys(this.state.edited[productId]);
+
+            updatedTaxonsIds.forEach((taxonId) => {
+                const updatedTaxon = this.state.edited[productId][taxonId];
+
+                if (updatedTaxon.available) {
+                    console.log(`Le produit ${updatedTaxon.productName} sera disponible en ${updatedTaxon.name}`);
+                } else {
+                    console.log(`Le produit ${updatedTaxon.productName} sera plus disponible en ${updatedTaxon.name}`);;
+                }
+            })
+        });
+    }
+
+    async applyTaxonsChanges() {
+        const updatedProductsIds = Object.keys(this.state.edited);
+
+        await bluebird.map(updatedProductsIds, (productId) => {
+            const updatedTaxonsIds = Object.keys(this.state.edited[productId]);
+
+            return bluebird.map(updatedTaxonsIds, (taxonId) => {
+                const { available } = this.state.edited[productId][taxonId];
+
+                return this.props.updateAvailability({ id: taxonId, available });
+            });
+        });
+
+        this.taxonsUpdatedMessage();
+        this.setState({ edited: {}, editable: false });
+    }
 
     render() {
 
@@ -107,15 +188,16 @@ class ListProduct extends Component {
             Cell: ({ value: taxons }) => (
                 <div className="Listproduct-cell-container">
                 {
-                    taxons.map((taxon, i) => (
+                    taxons
+                        .map((taxon, i) => (
                         <span
                             style={{ 
-                                backgroundColor: taxon.available ? '#1abc9c' : '#d3746a',
+                                backgroundColor: this.taxonBackgroundColor(taxon),
                                 cursor: this.state.editable && 'pointer',
                             }} 
                             className="Listproduct-vignette"
                             key={i}
-                            onClick={() => this.state.editable && console.log('Request ->', taxon)}
+                            onClick={() => this.updateTaxons(taxon)}
                         >
                             {taxon.taxon.name}
                         </span>
@@ -182,9 +264,9 @@ class ListProduct extends Component {
                                  <span
                                     style={{ backgroundColor: '#CC6155'}}
                                     className='Listproduct-link'
-                                    onClick={() => this.setState({ editable: false })}>
+                                    onClick={this.applyTaxonsChanges}>
                                         <MdCreate className="ListProduct-icon" size={18}/>
-                                        <span className="Listproduct-link-label">Quitter le mode édition</span>
+                                        <span className="Listproduct-link-label">Appliquer les modifications</span>
                                 </span>
                         }
                     </div>
@@ -223,8 +305,10 @@ export const ListAllProductsQuery = gql`query allProducts {
         brand { name },
         categories { name },
         productTaxons {
+            id
             taxon { name }
             available
+            product { id, name }
         }
     }
 }`;
@@ -237,14 +321,35 @@ const DeleteProductQuery = gql`
     }
 `;
 
+const DeleteProductQueryOptions = {
+    props: ({ mutate }) => ({
+        deleteProduct: ({ id }) =>
+            mutate({
+                variables: { id },
+            }),
+    })
+};
+
+const UpdateAvailabilityQuery = gql`
+  mutation updateProductTaxons($id: ID!, $available: Boolean) {
+      updateProductTaxons(id: $id, available: $available) {
+          id
+          available
+      }
+  } 
+`;
+
+const UpdateAvailabilityQueryOptions = {
+    props: ({ mutate }) => ({
+        updateAvailability: ({ id, available }) =>
+            mutate({
+                variables: { id, available },
+            })
+    })
+};
+
 export default compose(
     graphql(ListAllProductsQuery),
-    graphql(DeleteProductQuery, {
-        props: ({ mutate }) => ({
-            deleteProduct: ({ id }) =>
-                mutate({
-                    variables: { id },
-                }),
-        })
-    })
+    graphql(DeleteProductQuery, DeleteProductQueryOptions),
+    graphql(UpdateAvailabilityQuery, UpdateAvailabilityQueryOptions)
 )(ListProduct);
