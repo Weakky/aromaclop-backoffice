@@ -5,14 +5,13 @@ import gql from 'graphql-tag';
 let PieChart = require("react-chartjs").Bar;
 
 
-class CountProductPerAvailability extends Component {
+class CountProducts extends Component {
     render() {
         if (this.props.data.loading)
             return(<h1>loading</h1>);
         else {
-
             const data = {
-                labels: ["Fully Available product", "partially Available product", "Not Available product"],
+                labels: ["Fully Available", "partially Available", "Not Available"],
                 datasets: [{
                     label: 'Available product count',
                     data: [
@@ -22,12 +21,17 @@ class CountProductPerAvailability extends Component {
                 }]
             };
 
-            return (<PieChart data={data} width="600" height="250"/>);
+            return (
+                <div>
+                    <PieChart data={data} width="600" height="250"/>
+                    <p>Products total: {this.props.data.allProductCount.count}</p>
+                </div>);
         }
     }
 }
 
-const CountProductPerAvailabilityQuery = gql`query allProducts {
+const CountProductsQuery = gql`query allProducts {
+    allProductCount: _allProductsMeta { count }
     fullyAvailableProductCount: _allProductsMeta(filter: {
       productTaxons_every: { available: true }})
       { count }
@@ -43,4 +47,4 @@ const CountProductPerAvailabilityQuery = gql`query allProducts {
     { count }
 }`;
 
-export default graphql(CountProductPerAvailabilityQuery)(CountProductPerAvailability);
+export default graphql(CountProductsQuery)(CountProducts);

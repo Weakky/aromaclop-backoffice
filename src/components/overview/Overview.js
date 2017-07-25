@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
-import { compose, graphql } from 'react-apollo';
-import CountProductPerAvailability from './CountProductPerAvailability'
+import CountProducts from './CountProducts'
 
-class Overview extends Component {
+export default class Overview extends Component {
     render() {
-        return (<CountProductPerAvailability />);
+        return (<CountProducts/>);
     }
 }
-
-export default compose()(Overview);
