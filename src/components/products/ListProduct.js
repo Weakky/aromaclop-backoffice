@@ -3,8 +3,10 @@ import ReactTable from 'react-table';
 import bluebird from 'bluebird';
 import { compose, graphql } from 'react-apollo';
 import gql from 'graphql-tag';
+import _ from 'lodash';
 import { MdAdd, MdClose, MdCreate, MdRefresh } from 'react-icons/lib/md';
 import Modal from 'react-awesome-modal';
+
 import CreateProduct from './CreateProduct';
 
 import './styles/listproduct.css';
@@ -54,28 +56,27 @@ class ListProduct extends Component {
 
     async handleRefresh() {
         this.setState({ loading: true });
-        await this.props.data.refetch().then(() => this.setState({loading: false}));
+        await this.props.data.refetch();
+        this.setState({ loading: false })
     };
 
-    updateTaxons(taxon) {
-        if (this.state.editable) {
-            this.setState({
-                edited: {
-                    ...this.state.edited,
-                    [taxon.product.id]: {
-                        ...this.state.edited[taxon.product.id],
-                        [taxon.id]: {
-                            productName: taxon.product.name,
-                            name: taxon.taxon.name,
-                            id: taxon.id.name,
-                            available: this.editedTaxonAvailable(taxon)
-                                ? !this.editedTaxonAvailable(taxon).available
-                                : !taxon.available
-                        }
+    updateTaxons(productTaxon) {
+        this.setState({
+            edited: {
+                ...this.state.edited,
+                [productTaxon.product.id]: {
+                    ...this.state.edited[productTaxon.product.id],
+                    [productTaxon.id]: {
+                        productName: productTaxon.product.name,
+                        name: productTaxon.taxon.name,
+                        id: productTaxon.id.name,
+                        available: this.editedTaxonAvailable(productTaxon)
+                            ? !this.editedTaxonAvailable(productTaxon).available
+                            : !productTaxon.available
                     }
                 }
-            })
-        }
+            }
+        })
     }
 
     editedTaxonAvailable(taxon) {
@@ -112,7 +113,7 @@ class ListProduct extends Component {
                 if (updatedTaxon.available) {
                     console.log(`Le produit ${updatedTaxon.productName} sera disponible en ${updatedTaxon.name}`);
                 } else {
-                    console.log(`Le produit ${updatedTaxon.productName} sera plus disponible en ${updatedTaxon.name}`);;
+                    console.log(`Le produit ${updatedTaxon.productName} sera plus disponible en ${updatedTaxon.name}`);
                 }
             })
         });
@@ -121,6 +122,7 @@ class ListProduct extends Component {
     async applyTaxonsChanges() {
         const updatedProductsIds = Object.keys(this.state.edited);
 
+        this.setState({ loading: true });
         await bluebird.map(updatedProductsIds, (productId) => {
             const updatedTaxonsIds = Object.keys(this.state.edited[productId]);
 
@@ -132,7 +134,7 @@ class ListProduct extends Component {
         });
 
         this.taxonsUpdatedMessage();
-        this.setState({ edited: {}, editable: false });
+        this.setState({ edited: {}, editable: false, loading: false });
     }
 
     render() {
@@ -185,23 +187,29 @@ class ListProduct extends Component {
             Header: 'Taxons',
             width: 250,
             accessor: 'productTaxons',
-            Cell: ({ value: taxons }) => (
+            Cell: ({ value: productsTaxons }) => (
                 <div className="Listproduct-cell-container">
                 {
-                    taxons
-                        .map((taxon, i) => (
+                    _(productsTaxons)
+                        .sortBy(({ taxon }) => {
+                            const value = parseInt(taxon.name, 10);
+
+                            return isNaN(value) ? taxon.name : value;
+                        })
+                        .map((productTaxon, i) => (
                         <span
                             style={{ 
-                                backgroundColor: this.taxonBackgroundColor(taxon),
+                                backgroundColor: this.taxonBackgroundColor(productTaxon),
                                 cursor: this.state.editable && 'pointer',
                             }} 
                             className="Listproduct-vignette"
                             key={i}
-                            onClick={() => this.updateTaxons(taxon)}
+                            onClick={() => this.state.editable && this.updateTaxons(productTaxon)}
                         >
-                            {taxon.taxon.name}
+                            {productTaxon.taxon.name}
                         </span>
                     ))
+                        .value()
                 }
                 </div>
             )
@@ -234,7 +242,7 @@ class ListProduct extends Component {
                     onClickAway={() => this.closeModal()}
                 >
                     <div className="Listproduct-header-modal">
-                        <MdAdd style={{ color: '#F9F9F9', marginRight: 5 }}size={16}/><span className="Listproduct-header-label">Ajout d'un produit</span>
+                        <MdAdd style={{ color: '#F9F9F9', marginRight: 5 }} size={16}/><span className="Listproduct-header-label">Ajout d'un produit</span>
                     </div>
                     <div className="Listproduct-modal">
                         <CreateProduct closeModal={this.closeModal}/>
