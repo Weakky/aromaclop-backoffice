@@ -7,6 +7,8 @@ import './styles/CountProducts.css'
 
 class CountProducts extends Component {
     render() {
+        this.props.data.refetch();
+
         const {
             loading,
             allProductCount,
@@ -43,6 +45,7 @@ class CountProducts extends Component {
             }
         };
 
+        console.log('render');
         return (
             <div>
                 <div className="Countproduct-chart">
@@ -51,6 +54,7 @@ class CountProducts extends Component {
                 <p className="Countproduct-summary">
                     Total des produits: {allProductCount.count}
                 </p>
+                <button className="Countproduct-btn" onClick={() => this.props.data.refetch()}>rafraichir</button>
             </div>);
         }
 }
