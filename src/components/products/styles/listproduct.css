@@ -4,24 +4,6 @@
     margin: 0 10px 10px 10px;
 }
 
-.Listproduct-link {
-    color: rgba(255, 255, 255, 0.5);
-    border-radius: 2px;
-    cursor: pointer;
-    padding: 7px;
-}
-
-.Listproduct-link:hover {
-    color: #F9F9F9;
-}
-
-.Listproduct-link-label {
-    margin: 0 5px 0 5px;
-    font-size: 11px;
-    text-transform: uppercase;
-    font-weight: bold;
-}
-
 .Listproduct-buttons {
     background-color: #F9F9F9;
     display: flex;
@@ -29,10 +11,6 @@
     padding: 20px;
     height: 7.5vh;
     align-items: center;
-}
-
-.Listproduct-button {
-    margin: 0 15px 0 0;
 }
 
 .Listproduct-modal {

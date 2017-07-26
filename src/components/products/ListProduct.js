@@ -4,10 +4,11 @@ import bluebird from 'bluebird';
 import { compose, graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import _ from 'lodash';
-import { MdAdd, MdClose, MdCreate, MdRefresh } from 'react-icons/lib/md';
+import { MdAdd, MdClose, MdCreate, MdRefresh, MdKeyboardArrowLeft } from 'react-icons/lib/md';
 import Modal from 'react-awesome-modal';
 
 import CreateProduct from './CreateProduct';
+import Button from './Button';
 
 import './styles/listproduct.css';
 import 'react-table/react-table.css';
@@ -39,6 +40,7 @@ class ListProduct extends Component {
         this.closeModal = this.closeModal.bind(this);
         this.openModal = this.openModal.bind(this);
         this.applyTaxonsChanges = this.applyTaxonsChanges.bind(this);
+        this.switchEditMode = this.switchEditMode.bind(this);
     }
 
     openModal() {
@@ -48,6 +50,10 @@ class ListProduct extends Component {
     closeModal() {
         this.setState({visible : false});
     };
+
+    switchEditMode() {
+        this.setState({editable: !this.state.editable, edited: {}});
+    }
 
     async handleDelete(id) {
         await this.props.deleteProduct({ id });
@@ -248,46 +254,44 @@ class ListProduct extends Component {
                         <CreateProduct closeModal={this.closeModal}/>
                     </div>
                 </Modal>
-                <div className='Listproduct-buttons'>
-                    <div className='Listproduct-button'>
-                        <span
-                            style={{ backgroundColor: '#1abc9c'}}
-                            className='Listproduct-link'
-                            onClick={() => this.handleRefresh()}>
-                                <MdRefresh className="ListProduct-icon" size={18}/>
-                                <span className="Listproduct-link-label">Rafraichir les produits</span>
-                        </span>
-                    </div>
-                    <div className='Listproduct-button'>
-                        {
-                            !this.state.editable ?
-                                <span
-                                    style={{ backgroundColor: '#1abc9c'}}
-                                    className='Listproduct-link'
-                                    onClick={() => this.setState({ editable: true })}>
-                                        <MdCreate className="ListProduct-icon" size={18}/>
-                                        <span className="Listproduct-link-label">Activer le mode édition</span>
-                                </span>
-                            :
-                                 <span
-                                    style={{ backgroundColor: '#CC6155'}}
-                                    className='Listproduct-link'
-                                    onClick={this.applyTaxonsChanges}>
-                                        <MdCreate className="ListProduct-icon" size={18}/>
-                                        <span className="Listproduct-link-label">Appliquer les modifications</span>
-                                </span>
-                        }
-                    </div>
-                    <div className='Listproduct-button'>
-                        <span
-                            style={{ backgroundColor: '#1abc9c'}}
-                            className='Listproduct-link'
-                            onClick={() => this.openModal()}>
-                            <MdAdd className="ListProduct-icon" size={18}/>
-                            <span className="Listproduct-link-label">Ajouter un produit</span>
-                        </span>
-                    </div>
-                </div>
+                  {
+                      !this.state.editable ?
+                        <div className="Listproduct-buttons">
+                            <Button
+                              color='#1abc9c'
+                              callback={this.handleRefresh}
+                              icon={<MdRefresh size={18}/>}
+                              label="Rafraichir les produits"
+                            />
+                            <Button
+                              color="#1abc9c"
+                              callback={this.openModal}
+                              icon={<MdAdd size={18}/>}
+                              label="Ajouter un produit"
+                            />
+                            <Button
+                              color="#1abc9c"
+                              callback={this.switchEditMode}
+                              icon={<MdCreate size={18}/>}
+                              label="Entrer en mode édition"
+                            />
+                        </div>
+                      :
+                        <div className="Listproduct-buttons">
+                            <Button
+                              color="#cc6155"
+                              callback={this.switchEditMode}
+                              icon={<MdKeyboardArrowLeft size={18}/>}
+                              label="Sortir du mode édition"
+                            />
+                            <Button
+                              color="#1abc9c"
+                              callback={this.applyTaxonsChanges}
+                              icon={<MdCreate size={18}/>}
+                              label="Appliquer les modifications"
+                            />
+                        </div>
+                  }
                 <ReactTable
                     loadingText='Rafraichissement des données..'
                     loading={this.state.loading}
