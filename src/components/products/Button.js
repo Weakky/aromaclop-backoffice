@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import proptypes from 'prop-types';
 
 import './styles/button.css';
 
@@ -18,11 +19,11 @@ const Button = ( props ) => {
   )
 };
 
-Button.PropTypes = {
-  color: PropTypes.string,
-  callback: PropTypes.func,
-  icon: PropTypes.element,
-  label: PropTypes.string,
+Button.proptypes = {
+  color: proptypes.string,
+  callback: proptypes.func,
+  icon: proptypes.element,
+  label: proptypes.string,
 };
 
 export default Button;

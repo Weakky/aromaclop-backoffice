@@ -4,11 +4,9 @@ import Root from './components/Root';
 import Sidebar from './components/Sidebar';
 import SidebarItem from './components/SidebarItem';
 import Main from './components/Main';
-import HomeView from './components/views/HomeView';
 
 import ListProduct from './components/products/ListProduct';
 import Overview from './components/overview/Overview';
-import CreateProduct from './components/products/CreateProduct';
 import ApolloClient, { createNetworkInterface } from 'apollo-client';
 import { ApolloProvider } from 'react-apollo';
 import { BrowserRouter as Router, Route, Redirect, NavLink } from 'react-router-dom';
