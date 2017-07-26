@@ -7,6 +7,7 @@ import Main from './components/Main';
 import HomeView from './components/views/HomeView';
 
 import ListProduct from './components/products/ListProduct';
+import Overview from './components/overview/Overview';
 import CreateProduct from './components/products/CreateProduct';
 import ApolloClient, { createNetworkInterface } from 'apollo-client';
 import { ApolloProvider } from 'react-apollo';
@@ -61,7 +62,7 @@ class App extends Component {
             </Sidebar>
             <Main>
               <Route exact={true} path='/' render={() => <Redirect from="/" to="/Overview" />}/>
-              <Route exact={true} path='/Overview' component={HomeView}/>
+              <Route exact={true} path='/Overview' component={Overview}/>
               <Route exact={true} path='/Produits' component={ListProduct}/>
             </Main>
           </Root>
