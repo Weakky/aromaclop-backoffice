@@ -4,11 +4,12 @@ import bluebird from 'bluebird';
 import { compose, graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import _ from 'lodash';
-import { MdAdd, MdClose, MdCreate, MdRefresh, MdKeyboardArrowLeft } from 'react-icons/lib/md';
+import { MdAdd, MdClose, MdCreate, MdRefresh, MdKeyboardArrowLeft, MdPlaylistAddCheck, MdCheck } from 'react-icons/lib/md';
 import Modal from 'react-awesome-modal';
 
 import CreateProduct from './CreateProduct';
 import Button from './Button';
+import Resume from './Resume';
 
 import './styles/listproduct.css';
 import 'react-table/react-table.css';
@@ -30,25 +31,36 @@ class ListProduct extends Component {
 
         this.state = {
             visible: false,
+            resume: {visible: false, messages: []},
             loading: false,
             editable: false,
-            edited: {}
+            edited: {},
         };
 
         this.handleDelete = this.handleDelete.bind(this);
         this.handleRefresh = this.handleRefresh.bind(this);
-        this.closeModal = this.closeModal.bind(this);
-        this.openModal = this.openModal.bind(this);
+        this.closeCreateModal = this.closeCreateModal.bind(this);
+        this.openCreateModal = this.openCreateModal.bind(this);
+        this.closeResumeModal = this.closeResumeModal.bind(this);
+        this.openResumeModal = this.openResumeModal.bind(this);
         this.applyTaxonsChanges = this.applyTaxonsChanges.bind(this);
         this.switchEditMode = this.switchEditMode.bind(this);
     }
 
-    openModal() {
-        this.setState({visible : true});
+    openCreateModal() {
+        this.setState({visible: true});
     };
 
-    closeModal() {
-        this.setState({visible : false});
+    closeCreateModal() {
+        this.setState({visible: false});
+    };
+
+    openResumeModal() {
+        this.setState({resume: {visible: true}});
+    };
+
+    closeResumeModal() {
+        this.setState({resume: {visible: false}});
     };
 
     switchEditMode() {
@@ -98,31 +110,19 @@ class ListProduct extends Component {
         return taxon.available ? '#1abc9c' : '#d3746a';
     }
 
-    //TODO: Call this function when rendering the modal showing the updates that are going to be validated.
-    //TODO: Idea: Render additions in green, deletions in red, per product. Something like:
-    //                 FR-M:
-    //                      + 0mg sera disponible
-    //                      + 6mg sera disponible
-    //                      - 11mg sera plus disponible
-    //                      - 16mg sera plus disponible
-    //                 FR-K:
-    //                      ...
     taxonsUpdatedMessage() {
         const updatedProductsIds = Object.keys(this.state.edited);
+        var resumeMessages = [];
 
         updatedProductsIds.forEach((productId) => {
             const updatedTaxonsIds = Object.keys(this.state.edited[productId]);
 
             updatedTaxonsIds.forEach((taxonId) => {
                 const updatedTaxon = this.state.edited[productId][taxonId];
-
-                if (updatedTaxon.available) {
-                    console.log(`Le produit ${updatedTaxon.productName} sera disponible en ${updatedTaxon.name}`);
-                } else {
-                    console.log(`Le produit ${updatedTaxon.productName} sera plus disponible en ${updatedTaxon.name}`);
-                }
+                resumeMessages.push(updatedTaxon);
             })
         });
+        resumeMessages.length && this.setState({ resume: { visible: true, messages: resumeMessages} });
     }
 
     async applyTaxonsChanges() {
@@ -245,18 +245,32 @@ class ListProduct extends Component {
                     width="400"
                     height="620"
                     effect="fadeInUp"
-                    onClickAway={() => this.closeModal()}
+                    onClickAway={() => this.closeCreateModal()}
                 >
                     <div className="Listproduct-header-modal">
                         <MdAdd style={{ color: '#F9F9F9', marginRight: 5 }} size={16}/><span className="Listproduct-header-label">Ajout d'un produit</span>
                     </div>
                     <div className="Listproduct-modal">
-                        <CreateProduct closeModal={this.closeModal}/>
+                        <CreateProduct closeModal={this.closeCreateModal}/>
+                    </div>
+                </Modal>
+                <Modal
+                    visible={this.state.resume.visible}
+                    width="500"
+                    height="500"
+                    effect="fadeInUp"
+                    onClickAway={() => this.closeResumeModal()}
+                >
+                    <div className="Listproduct-header-modal">
+                         <MdPlaylistAddCheck style={{ color: '#F9F9F9', marginRight: 10 }} size={24}/><span className="Listproduct-header-label">Récapitulatif des modifications</span>
+                    </div>
+                    <div className="Listproduct-messages">
+                        { _.map(this.state.resume.messages, (message, k) => <Resume key={k} data={message}/> )}
                     </div>
                 </Modal>
                   {
                       !this.state.editable ?
-                        <div className="Listproduct-buttons">
+                        <div style={{ backgroundColor: '#F9F9F9' }} className="Listproduct-buttons">
                             <Button
                               color='#1abc9c'
                               callback={this.handleRefresh}
@@ -265,7 +279,7 @@ class ListProduct extends Component {
                             />
                             <Button
                               color="#1abc9c"
-                              callback={this.openModal}
+                              callback={this.openCreateModal}
                               icon={<MdAdd size={18}/>}
                               label="Ajouter un produit"
                             />
@@ -277,7 +291,7 @@ class ListProduct extends Component {
                             />
                         </div>
                       :
-                        <div className="Listproduct-buttons">
+                        <div style={{ backgroundColor: '#0f202e' }} className="Listproduct-buttons">
                             <Button
                               color="#cc6155"
                               callback={this.switchEditMode}
@@ -287,7 +301,7 @@ class ListProduct extends Component {
                             <Button
                               color="#1abc9c"
                               callback={this.applyTaxonsChanges}
-                              icon={<MdCreate size={18}/>}
+                              icon={<MdCheck size={18}/>}
                               label="Appliquer les modifications"
                             />
                         </div>
