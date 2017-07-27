@@ -226,6 +226,7 @@ const CreateProductTaxonsMutation = gql`
             id
             available
             taxon { name }
+            product { id, name }
         }
     }`;
 
