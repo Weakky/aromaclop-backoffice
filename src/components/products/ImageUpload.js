@@ -6,8 +6,9 @@ import './styles/imageupload.css';
 export default class ImageUpload extends React.Component {
     constructor(props) {
         super(props);
+
         this.state = {
-            imagePreviewUrl: '',
+            imagePreviewUrl: props.imagePreviewUrl,
         };
     }
 
@@ -56,4 +57,9 @@ export default class ImageUpload extends React.Component {
 
 ImageUpload.proptypes = {
     onImageSelected: proptypes.func,
+    imagePreviewUrl: proptypes.string,
+};
+
+ImageUpload.defaultProps = {
+    imagePreviewUrl: '',
 };

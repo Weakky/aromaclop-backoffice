@@ -1,43 +1,87 @@
 import React, { Component } from 'react';
+import _ from 'lodash';
+import bluebird from 'bluebird';
 import proptypes from 'prop-types';
 import axios from 'axios';
 import { withRouter } from 'react-router-dom';
 import { compose, graphql } from 'react-apollo';
-import gql from 'graphql-tag';
-
 import Select from 'react-select';
 import ImageUpload from './ImageUpload';
 
-import { ListAllProductsQuery } from './ListProduct';
+import {
+    UpdateAvailabilityQuery,
+    UpdateAvailabilityQueryOptions,
+    UpdateProductMutation,
+    UpdateProductMutationOptions,
+    CreateProductMutation,
+    CreateProductMutationOptions,
+    CreateProductTaxonsMutation,
+    CreateProductTaxonsMutationOptions,
+    DeleteProductTaxonsMutation,
+    DeleteProductTaxonsMutationOptions,
+} from '../../graphql/mutations';
+
+import { AllDetailsQuery } from '../../graphql/queries';
 
 import './styles/createproduct.css';
 import 'react-select/dist/react-select.css';
 
 class CreateProduct extends Component {
 
-    initialState = {
-        name: '',
-        brandId: '',
-        taxonsIds: [],
-        categoriesIds: [],
-        file: null,
-    };
-
     constructor(props) {
         super(props);
 
-        this.state = this.initialState;
         this.handlePost = this.handlePost.bind(this);
+
+        this.initialState = Object.freeze({
+            name: '',
+            brandId: '',
+            taxonsIds: [],
+            initialTaxonsIds: [],
+            categoriesIds: [],
+            file: null,
+            initialFile: '',
+            productId: '',
+        });
+
+        this.state = { ...this.initialState };
     };
 
-    handleTaxonProductTaxons(taxon) {
+    componentWillReceiveProps({ name, brandId, taxonsIds, categoriesIds, file, productId }) {
         this.setState({
-            taxonsIds: this.state.taxonsIds,
-            taxon: !taxon.available });
+            name,
+            brandId,
+            taxonsIds,
+            initialTaxonsIds: taxonsIds,
+            categoriesIds,
+            file,
+            initialFile: file,
+            productId,
+        });
+    }
+
+    handleProductTaxons(taxonToUpdate) {
+        const updatedTaxonsIds = this.state.taxonsIds.map((taxon) => {
+            if (taxon.id === taxonToUpdate.id) {
+                return {
+                    ...taxon,
+                    available: !taxon.available,
+                };
+            }
+
+            return taxon;
+        });
+
+        this.setState({ taxonsIds: updatedTaxonsIds });
     };
 
     async uploadFile() {
         const { file } = this.state;
+
+        if (!file) {
+            return Promise.resolve(true);
+        }
+
         const data = new FormData();
 
         data.append('data', file);
@@ -50,20 +94,27 @@ class CreateProduct extends Component {
     };
 
     render() {
-        const { data: {
+        const {
             allBrands,
             allTaxons,
-            allCategories
-        } } = this.props;
+            allCategories,
+            loading
+        } = this.props.data;
 
-        if (this.props.data.loading) {
+        if (loading) {
             return <div>Loading...</div>
         }
 
         // Options pour le select à multiples choix
-        const taxons = allTaxons.map((taxon) => ({ label: taxon.name, value: taxon.id, available: true }));
-        const brands = allBrands.map((brand) => ({ label: brand.name, value: brand.id}));
-        const categories = allCategories.map((categorie) => ({ label: categorie.name, value: categorie.id}));
+        const taxons = _(allTaxons)
+            .differenceBy(this.state.taxonsIds, 'id')
+            .map((taxon) => ({ label: taxon.name, value: taxon.id, available: true }))
+            .value();
+        const brands = allBrands.map((brand) => ({ label: brand.name, value: brand.id }));
+        const categories = _(allCategories)
+            .differenceBy(this.state.categoriesIds, 'id')
+            .map((category) => ({ label: category.name, value: category.id}))
+            .value();
 
         return (
             <div className="Createproduct-container">
@@ -90,7 +141,17 @@ class CreateProduct extends Component {
                        multi
                        value={this.state.taxonsIds}
                        options={taxons}
-                       onChange={(targets) => this.setState({ taxonsIds: targets.map((target) => target)})}
+                       onChange={(taxonsIds) => (
+                           this.setState({
+                               taxonsIds: taxonsIds.map(({ id, value, label, available }) => {
+                                   if (!id) {
+                                       return { id: value, label, available };
+                                   }
+
+                                   return { id, label, available };
+                               })
+                           })
+                       )}
                     />
                 </label>
                 {
@@ -100,10 +161,12 @@ class CreateProduct extends Component {
                             { 
                                 this.state.taxonsIds.map((taxon, k) => (
                                     <span 
-                                        onClick={() => this.handleTaxonProductTaxons(taxon)}
+                                        onClick={() => this.handleProductTaxons(taxon)}
                                         className="Createproduct-switch" 
                                         style={{backgroundColor: taxon.available ? '#1abc9c' : '#D3746A'}}
-                                        key={k}>{taxon.label}
+                                        key={k}
+                                    >
+                                        {taxon.label}
                                     </span>
                                 ))
                             }
@@ -111,34 +174,115 @@ class CreateProduct extends Component {
                         </div>
                     )
                 }
-                <label className="Createproduct-label">Catégorie
+                <label className="Createproduct-label">Catégories
                     <Select
                        placeholder='...'
                        multi
                        value={this.state.categoriesIds}
                        options={categories}
                        clearable={false}
-                       onChange={(targets) => this.setState({ categoriesIds: targets.map((target) => target.value)})}
+                       onChange={(categoriesIds) => (
+                           this.setState({
+                               categoriesIds: categoriesIds.map(({ label, id, value }) => {
+                                   if (!id) {
+                                       return { id: value, label };
+                                   }
+
+                                   return { id, label };
+                               })
+                           })
+                       )}
                     />
                 </label>
-                <ImageUpload onImageSelected={({ file }) => this.setState({ file })} />
+                <ImageUpload
+                    onImageSelected={({ file }) => this.setState({ file })}
+                    imagePreviewUrl={this.state.file}
+                />
                 { this.state.name && this.state.file &&
                     <button
                         className="Createproduct-button"
-                        onClick={this.handlePost}> Ajouter le produit
+                        onClick={this.handlePost}
+                    >
+                        {
+                            !this.props.editing
+                            ? 'Ajouter le produit'
+                            : 'Editer le produit'
+                        }
                     </button>
                 }
             </div>
         );
     }
 
-    async handlePost() {
-        this.props.closeModal();
+    async handleUpdatePost() {
+        const {
+            productId,
+            name,
+            brandId,
+            taxonsIds,
+            initialTaxonsIds,
+            categoriesIds,
+            file,
+            initialFile,
+        } = this.state;
+
+        let imageUrl = file;
+
+        try {
+
+            //Update image for product if changed
+            //TODO: Delete old image
+            if (file !== initialFile) {
+                imageUrl = (await this.uploadFile()).data.url;
+            }
+
+            await this.props.updateProduct({
+                id: productId,
+                name,
+                brandId,
+                categoriesIds: categoriesIds.map(({ id }) => id),
+                imageUrl,
+            });
+
+            const toCreate = _.differenceBy(taxonsIds, initialTaxonsIds, 'id');
+            const toDelete = _.differenceBy(initialTaxonsIds, taxonsIds, 'id');
+            const toUpdate = initialTaxonsIds.filter((taxon) => {
+                const associatedTaxon = taxonsIds.find(({ id }) => id === taxon.id);
+
+                return associatedTaxon && associatedTaxon.available !== taxon.available;
+            });
+
+            await bluebird.all([
+               bluebird.map(toUpdate, ({ productTaxonId, available }) => (
+                    this.props.updateAvailability({ id: productTaxonId, available: !available })
+                )),
+                bluebird.map(toDelete, ({ productTaxonId }) => (
+                    this.props.deleteProductTaxons({
+                        id: productTaxonId
+                    })
+                )),
+                bluebird.map(toCreate, ({ id, available }) => (
+                    this.props.addProductTaxons({
+                        taxonId: id,
+                        available,
+                        productId
+                    })
+                )),
+            ]);
+
+        } catch(e) {
+            console.log(e);
+        }
+    }
+
+    async handleCreatePost() {
         const { name, brandId, taxonsIds, categoriesIds } = this.state;
-        const { data: {
-            allBrands,
-            allCategories,
-        }} = this.props;
+        const {
+            data: {
+                allBrands,
+                allCategories,
+            }
+        } = this.props;
 
         try {
             const { data: { url } } = await this.uploadFile();
@@ -151,131 +295,64 @@ class CreateProduct extends Component {
                 name,
                 imageUrl: url,
                 brandId: brandId ? brandId : allBrands[0].id,
-                categoriesIds: categoriesIds.length > 0 ? categoriesIds : allCategories[0].id,
+                categoriesIds: categoriesIds.length > 0
+                    ? categoriesIds.map(({ id }) => id)
+                    : allCategories[0].id,
             });
 
-            await taxonsIds.forEach(async (taxonId) => (
-                await this.props.addProductTaxons({ taxonId: taxonId.value, productId, available: taxonId.available })
-            ));
-            this.setState(this.initialState);
-            this.props.history.push('/Produits');
+            await bluebird.map(taxonsIds, ((taxon) => (
+                 this.props.addProductTaxons({
+                    taxonId: taxon.id,
+                    productId,
+                    available: taxon.available
+                })
+            )));
         } catch (e) {
             //TODO: Handle error (could not add product)
             console.log(e);
         }
     }
+
+    async handlePost() {
+        this.props.closeModal();
+
+        if (this.props.editing) {
+            await this.handleUpdatePost();
+        } else {
+            await this.handleCreatePost();
+        }
+
+        this.setState(this.initialState);
+        this.props.history.push('/Produits');
+    }
 }
 
 CreateProduct.proptypes = {
     closeModal: proptypes.func,
+    name: proptypes.string,
+    brandId: proptypes.string,
+    productId: proptypes.string,
+    taxonsIds: proptypes.array,
+    categoriesIds: proptypes.array,
+    file: proptypes.object,
+    editing: proptypes.bool,
 };
 
-const CreateProductMutation = gql`
-    mutation createProduct(
-    $name: String!,
-    $imageUrl: String!,
-    $brandId: ID,
-    $categoriesIds: [ID!],
-    ) {
-        createProduct(
-            name: $name,
-            imageUrl: $imageUrl,
-            brandId: $brandId,
-            categoriesIds: $categoriesIds,
-        ) {
-            id
-            name
-            categories { name }
-            brand { name }
-            imageUrl
-            productTaxons { available, taxon { name } }
-        }
-    }`;
-
-const CreateProductMutationOptions = {
-    props: ({ mutate }) => ({
-        addProduct: ({ name, imageUrl, brandId, categoriesIds }) =>
-            mutate({
-                variables: {
-                    name,
-                    imageUrl,
-                    brandId,
-                    categoriesIds,
-                },
-                update: (store, { data: { createProduct } }) => {
-                    const data = store.readQuery({ query: ListAllProductsQuery });
-
-                    data.allProducts.push(createProduct);
-                    store.writeQuery({ query: ListAllProductsQuery, data });
-                },
-            }),
-    }),
+CreateProduct.defaultProps = {
+    name: '',
+    brandId: '',
+    taxonsIds: [],
+    categoriesIds: [],
+    file: null,
+    editing: false,
 };
-
-const CreateProductTaxonsMutation = gql`
-    mutation createProductTaxons(
-    $productId: ID
-    $taxonId: ID
-    $available: Boolean!
-    ) {
-        createProductTaxons(
-            productId: $productId
-            taxonId: $taxonId
-            available: $available
-        ) {
-            id
-            available
-            taxon { name }
-            product { id, name }
-        }
-    }`;
-
-const CreateProductTaxonsMutationOptions = {
-    props: ({ mutate }) => ({
-        addProductTaxons: ({ productId, taxonId, available }) =>
-            mutate({
-                variables: {
-                    productId,
-                    taxonId,
-                    available,
-                },
-                update: (store, { data: { createProductTaxons } }) => {
-                    const data = store.readQuery({ query: ListAllProductsQuery });
-
-                    data.allProducts = data.allProducts.map((product) => {
-                        if (product.id === productId) {
-                            return {
-                                ...product,
-                                productTaxons: [...product.productTaxons, createProductTaxons],
-                            }
-                        }
-                        return product;
-                    });
-
-                    store.writeQuery({ query: ListAllProductsQuery, data});
-                }
-            })
-    }),
-};
-
-const AllDetailsQuery = gql`query allDetailsQuery {
-    allTaxons {
-        id,
-        name,
-    },
-    allBrands {
-        id,
-        name
-    },
-    allCategories {
-        id,
-        name
-    }
-}`;
 
 const CreateProductWithMutationAndQueries = compose(
-    graphql(CreateProductTaxonsMutation, CreateProductTaxonsMutationOptions),
+    graphql(UpdateProductMutation, UpdateProductMutationOptions),
     graphql(CreateProductMutation, CreateProductMutationOptions),
+    graphql(CreateProductTaxonsMutation, CreateProductTaxonsMutationOptions),
+    graphql(DeleteProductTaxonsMutation, DeleteProductTaxonsMutationOptions),
+    graphql(UpdateAvailabilityQuery, UpdateAvailabilityQueryOptions),
     graphql(AllDetailsQuery),
 )(CreateProduct);
 

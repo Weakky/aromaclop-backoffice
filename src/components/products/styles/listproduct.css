@@ -16,7 +16,7 @@
     display: flex;
     flex-direction: column;
     height: 440px;
-    margin: 0px 0px 10px 0;
+    margin: 0 0 10px 0;
     overflow: scroll;
 }
 
@@ -61,6 +61,21 @@
 
 .Listproduct-delete:hover {
     background-color: #D3746A;
+    opacity: 0.9;
+}
+
+.Listproduct-edit {
+    border-radius: 2px;
+    padding: 5px;
+    background-color: #1abc9c;
+    cursor: pointer;
+    color: #F9F9F9;
+    line-height: 60px;
+    font-size: 12px;
+}
+
+.Listproduct-edit:hover {
+    background-color: #1cd7b5;
     opacity: 0.9;
 }
 
