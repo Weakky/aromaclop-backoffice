@@ -44,8 +44,7 @@ class CountProducts extends Component {
                 }]
             }
         };
-
-        console.log('render');
+            
         return (
             <div>
                 <div className="Countproduct-chart">
