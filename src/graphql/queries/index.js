@@ -16,6 +16,31 @@ export const ListAllProductsQuery = gql`query allProducts {
     }
 }`;
 
+export const ListAllOrdersQuery  = gql`query allOrders{
+  allOrders {
+    id
+    state
+    owner {
+      firstName
+      lastName
+    }
+    createdAt
+    items {
+      taxon {
+        product {
+          name
+          imageUrl
+        }
+        taxon {
+          name
+        }
+      }
+      quantity
+    }
+  }
+}`;
+
+
 export const AllDetailsQuery = gql`query allDetailsQuery {
     allTaxons {
         id,

@@ -6,6 +6,7 @@ import SidebarItem from './components/SidebarItem';
 import Main from './components/Main';
 
 import ListProduct from './components/products/ListProduct';
+import ListOrder from './components/order/ListOrder'
 import Overview from './components/overview/Overview';
 import ApolloClient, { createNetworkInterface } from 'apollo-client';
 import { ApolloProvider } from 'react-apollo';
@@ -62,6 +63,7 @@ class App extends Component {
               <Route exact={true} path='/' render={() => <Redirect from="/" to="/Overview" />}/>
               <Route exact={true} path='/Overview' component={Overview}/>
               <Route exact={true} path='/Produits' component={ListProduct}/>
+              <Route exact={true} path="/Commandes" component={ListOrder}/>
             </Main>
           </Root>
         </Router>
