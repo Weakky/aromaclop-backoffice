@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import ReactTable from 'react-table';
-import {
-    ListAllOrdersQuery
-} from '../../graphql/queries';
+import { ListAllOrdersQuery } from '../../graphql/queries';
+import { MdRefresh } from 'react-icons/lib/md';
+import Button from '../Button';
 
 class ListOrder extends Component {
     constructor(props) {
@@ -12,7 +12,15 @@ class ListOrder extends Component {
         this.state = {
             loading: false
         };
+        this.handleRefresh = this.handleRefresh.bind(this);
     }
+
+
+    async handleRefresh() {
+        this.setState({ loading: true });
+        await this.props.data.refetch();
+        this.setState({ loading: false })
+    };
 
     render() {
 
@@ -65,52 +73,62 @@ class ListOrder extends Component {
         ];
 
         return (
-            <ReactTable
-                loadingText='Rafraichissement des données..'
-                loading={this.state.loading}
-                noDataText='Aucune commande..'
-                data={this.props.data.allOrders}
-                columns={columns}
-                style={{
-                    height: '91vh'
-                }}
-                SubComponent={(row) => {
-                    const columns = [
-                        {
-                            Header: "Article",
-                            accessor: "taxon.product.imageUrl",
-                            Cell: props => <img alt='product' style={{ height: 60, width: 60 }} src={props.value}/>
-                        },
-                        {
-                            Header: "Produit",
-                            accessor: "taxon.product.name",
-                            Cell: props => <p>{props.value}</p>
-                        },
-                        {
-                            Header: "Catégorie",
-                            accessor: "taxon.taxon.name",
-                            Cell: props => <p>{props.value}</p>
-                        },
-                        {
-                            Header: "Quantité",
-                            accessor: "quantity",
-                            Cell: props => <p>{props.value}</p>
-                        }
-                    ];
+            <div>
+                <div style={{ backgroundColor: '#F9F9F9' }}>
+                    <Button
+                        color='#1abc9c'
+                        callback={this.handleRefresh}
+                        icon={<MdRefresh size={18}/>}
+                        label="Rafraichir les commandes"
+                    />
+                </div>
+                <ReactTable
+                    loadingText='Rafraichissement des données..'
+                    loading={this.state.loading}
+                    noDataText='Aucune commande..'
+                    data={this.props.data.allOrders}
+                    columns={columns}
+                    style={{
+                        height: '91vh'
+                    }}
+                    SubComponent={(row) => {
+                        const columns = [
+                            {
+                                Header: "Article",
+                                accessor: "taxon.product.imageUrl",
+                                Cell: props => <img alt='product' style={{ height: 60, width: 60 }} src={props.value}/>
+                            },
+                            {
+                                Header: "Produit",
+                                accessor: "taxon.product.name",
+                                Cell: props => <p>{props.value}</p>
+                            },
+                            {
+                                Header: "Catégorie",
+                                accessor: "taxon.taxon.name",
+                                Cell: props => <p>{props.value}</p>
+                            },
+                            {
+                                Header: "Quantité",
+                                accessor: "quantity",
+                                Cell: props => <p>{props.value}</p>
+                            }
+                        ];
 
-                    return (
-                        <ReactTable
-                            noDataText='Aucun article..'
-                            style={{width: "50%"}}
-                            data={row.original.items}
-                            columns={columns}
-                            defaultPageSize={row.original.items ? row.original.items.length : 0}
-                            showPagination={false}
-                            sortable={false}
-                        />
-                    )
-                }}
-            />
+                        return (
+                            <ReactTable
+                                noDataText='Aucun article..'
+                                style={{width: "50%"}}
+                                data={row.original.items}
+                                columns={columns}
+                                defaultPageSize={row.original.items ? row.original.items.length : 0}
+                                showPagination={false}
+                                sortable={false}
+                            />
+                        )
+                    }}
+                />
+            </div>
         )
     }
 }

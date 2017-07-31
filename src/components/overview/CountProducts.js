@@ -3,12 +3,23 @@ import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import { Bar } from 'react-chartjs-2';
 import './styles/CountProducts.css'
-
+import { MdRefresh } from 'react-icons/lib/md';
+import Button from '../Button';
 
 class CountProducts extends Component {
-    render() {
-        this.props.data.refetch();
+    constructor(props) {
+        super (props);
 
+        this.handleRefresh = this.handleRefresh.bind(this);
+    }
+
+    async handleRefresh() {
+        this.setState({ loading: true });
+        await this.props.data.refetch();
+        this.setState({ loading: false })
+    };
+
+    render() {
         const {
             loading,
             allProductCount,
@@ -53,8 +64,14 @@ class CountProducts extends Component {
                 <p className="Countproduct-summary">
                     Total des produits: {allProductCount.count}
                 </p>
-                <button className="Countproduct-btn" onClick={() => this.props.data.refetch()}>rafraichir</button>
-            </div>);
+                <div style={{ backgroundColor: '#F9F9F9' }}>
+                    <Button
+                        color='#1abc9c'
+                        callback={this.handleRefresh}
+                        icon={<MdRefresh size={18}/>}
+                        label="Rafraichir"
+                    />
+                </div>            </div>);
         }
 }
 

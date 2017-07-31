@@ -16,7 +16,7 @@ import {
 import Modal from 'react-awesome-modal';
 
 import CreateProduct from './CreateProduct';
-import Button from './Button';
+import Button from '../Button';
 import Resume from './Resume';
 
 import {
