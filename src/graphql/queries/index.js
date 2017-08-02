@@ -55,3 +55,10 @@ export const AllDetailsQuery = gql`query allDetailsQuery {
         name
     }
 }`;
+
+export const ListAllBrandsQuery = gql`query ListAllBrands {
+  allBrands {
+    name,
+    id
+  }
+}`;
