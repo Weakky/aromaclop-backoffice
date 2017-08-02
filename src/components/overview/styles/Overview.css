@@ -1,10 +1,10 @@
-.Countproduct-chart {
+.Overview-chart {
     width: 600px;
     height: 250px;
 }
 
-.Countproduct-summary {
-    padding-top: 45px;
+.Overview-summary {
+    padding-top: 55px;
     padding-left: 25px;
     display: inline-block;
     margin-right: 20px;
