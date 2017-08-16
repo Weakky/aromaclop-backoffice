@@ -1,3 +1,11 @@
+
+.Overview-spinner {
+    display: flex;
+    height: 80vh;
+    justify-content: center;
+    align-items: center;
+}
+
 .Overview-chart {
     width: 600px;
     height: 250px;

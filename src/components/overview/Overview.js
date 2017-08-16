@@ -3,12 +3,13 @@ import { Bar } from 'react-chartjs-2';
 import {gql, graphql} from 'react-apollo';
 import Button from '../Button';
 import { MdRefresh } from 'react-icons/lib/md';
+import Spinner from 'react-spinkit';
 
 import './styles/Overview.css';
 
 class Overview extends Component {
     constructor(props) {
-        super (props);
+        super(props);
 
         this.handleRefresh = this.handleRefresh.bind(this);
     }
@@ -16,12 +17,11 @@ class Overview extends Component {
     async handleRefresh() {
         this.setState({ loading: true });
         await this.props.data.refetch();
-        this.setState({ loading: false })
+        this.setState({ loading: false });
     };
 
     render() {
 
-        console.log(this.props.data);
         const {
             loading,
             allProductCount,
@@ -33,7 +33,16 @@ class Overview extends Component {
         } = this.props.data;
 
         if (loading)
-            return (<h1>loading</h1>);
+            return (
+                <div className="Overview-spinner">
+                    <Spinner
+                        name="ball-clip-rotate-multiple"
+                        color="#d3746a"
+                        noFadeIn
+                    />
+                </div>
+            );
+
         const chartProps = [
             {
                 data: {
