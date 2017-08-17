@@ -25,12 +25,11 @@
 }
 
 .Listproduct-cell {
-    margin: 0;
     line-height: 60px;
     font-size: 12px;
     text-align: center;
     text-transform: uppercase;
-    margin-left: 5px;
+    margin: 0 0 0 5px;
 }
 
 .Listproduct-vignette {

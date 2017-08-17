@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Bar } from 'react-chartjs-2';
+import { Bar, Pie } from 'react-chartjs-2';
 import {gql, graphql} from 'react-apollo';
 import Button from '../Button';
 import { MdRefresh } from 'react-icons/lib/md';
@@ -48,29 +48,25 @@ class Overview extends Component {
                 data: {
                     labels: ["Disponibles", "Partiellement disponibles", "Indisponibles"],
                     datasets: [{
-                        label: 'product-count',
                         data: [
                             fullyAvailableProductCount.count,
                             partiallyAvailableProductCount.count,
                             notAvailableProductCount.count],
-                        backgroundColor: "rgba(0,102,204,0.5)",
-                        borderColor: "rgba(0,91,183,0.5)",
-                        borderWidth: 1,
-                        hoverBackgroundColor: "rgba(0,102,204,0.6)",
-                        hoverBorderColor: "rgba(0,91,183,0.6)",
-                    }]
+                        borderWidth: 0,
+                        backgroundColor: [
+                            '#1abc9c',
+                            '#ffce56',
+                            '#d3746a',
+                        ],
+                        hoverBackgroundColor: [
+                            'rgba(26, 188, 156, 0.8)',
+                            'rgba(255, 206, 86, 0.8)',
+                            'rgba(211, 116, 106, 0.8)',
+                        ],
+                    }],
                 },
-                options: {
-                    scales: {
-                        yAxes: [{
-                            ticks: {
-                                beginAtZero: true,
-                            }
-                        }]
-                    }
-                },
-                component: Bar,
-                summary: " Total des produits: " + allProductCount.count
+                component: Pie,
+                summary: " Total des produits: " + allProductCount.count,
             },
             {
                 data: {
@@ -88,18 +84,9 @@ class Overview extends Component {
                         hoverBorderColor: "rgba(0,91,183,0.6)",
                     }]
                 },
-                options: {
-                    scales: {
-                        yAxes: [{
-                            ticks: {
-                                beginAtZero: true,
-                            }
-                        }]
-                    }
-                },
                 component: Bar,
-                summary: " Total des commandes en cours: " + (processedOrders.count + processingOrders.count)
-            }
+                summary: " Total des commandes en cours: " + (processedOrders.count + processingOrders.count),
+            },
         ];
 
         const charts = chartProps.map(({ component: Component, data, options, summary }) => {
@@ -108,21 +95,23 @@ class Overview extends Component {
                         <div className="Overview-chart"><Component data={data} options={options} /></div>
                         <div className="Overview-summary">{summary}</div>
                     </div>
-                )
-            }
+                );
+            },
         );
 
         return (
-            <div>
-                <div style={{ backgroundColor: '#F9F9F9' }}>
+            <div className="Overview-container">
+                <div className="Overview-buttons">
                     <Button
                         color='#1abc9c'
                         callback={this.handleRefresh}
                         icon={<MdRefresh size={18}/>}
-                        label="Rafraichir"
+                        label="Rafraichir les données"
                     />
                 </div>
-                {charts}
+                <div className="Overview-charts">
+                    {charts}
+                </div>
             </div>
         );
     }

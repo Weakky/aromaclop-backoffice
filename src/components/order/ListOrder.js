@@ -5,6 +5,8 @@ import { ListAllOrdersQuery } from '../../graphql/queries';
 import { MdRefresh } from 'react-icons/lib/md';
 import Button from '../Button';
 
+import './styles/Listorder.css';
+
 class ListOrder extends Component {
     constructor(props) {
         super(props);
@@ -28,14 +30,14 @@ class ListOrder extends Component {
             {
                 Header: 'ID',
                 accessor: 'id',
-                Cell: props => <p>{props.value}</p>,
+                Cell: props => <p className="Listorder-cell" style={{ fontWeight: 'bold'}}>{props.value}</p>,
                 filterable: true,
             },
             {
                 Header: 'Etat',
                 accessor: 'state',
                 Cell: props =>
-                    <p>
+                    <p className="Listorder-cell" >
                         {{PROCESSING: "Traitement en cours", PROCESSED: "Traitée", RECEIVED: "Reçue"}[props.value]}
                     </p>,
                 filterable: true,
@@ -54,7 +56,7 @@ class ListOrder extends Component {
             {
                 Header: 'Client',
                 accessor: 'owner',
-                Cell: props => <p>{props.value.firstName} {props.value.lastName.toUpperCase()}</p>,
+                Cell: props => <p className="Listorder-cell" >{props.value.firstName} {props.value.lastName.toUpperCase()}</p>,
                 filterable: true,
                 filterMethod: (filter, row) => {
                     const id = filter.pivotId || filter.id;
@@ -68,13 +70,13 @@ class ListOrder extends Component {
             {
                 Header: 'Date de creation',
                 accessor: 'createdAt',
-                Cell: props => <p>{props.value.substring(0, 10)}</p>,
+                Cell: props => <p className="Listorder-cell" >{props.value.substring(0, 10)}</p>,
             }
         ];
 
         return (
             <div>
-                <div style={{ backgroundColor: '#F9F9F9' }}>
+                <div className="Listorder-buttons">
                     <Button
                         color='#1abc9c'
                         callback={this.handleRefresh}
@@ -87,6 +89,7 @@ class ListOrder extends Component {
                     loading={this.state.loading}
                     noDataText='Aucune commande..'
                     data={this.props.data.allOrders}
+                    className='Listorder-table -highlight'
                     columns={columns}
                     style={{
                         height: '91vh'

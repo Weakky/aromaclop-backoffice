@@ -1,0 +1,21 @@
+.Listorder-buttons {
+    display: flex;
+    flex-direction: row;
+    padding: 20px;
+    height: 7.5vh;
+    align-items: center;
+}
+
+.Listorder-table {
+    background-color: #F5F5F5;
+    box-shadow: 1px 1px 5px 1px rgba(0,0,0,0.1);
+    margin: 0 10px 10px 10px;
+}
+
+.Listorder-cell {
+    line-height: 60px;
+    font-size: 12px;
+    text-align: center;
+    text-transform: uppercase;
+    margin: 0 0 0 5px;
+}

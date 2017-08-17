@@ -5,6 +5,8 @@ import Button from '../Button';
 import { MdRefresh } from 'react-icons/lib/md';
 import ReactTable from 'react-table';
 
+import './styles/Listbrand.css';
+
 class ListBrands extends  Component {
     constructor(props) {
         super(props);
@@ -26,36 +28,37 @@ class ListBrands extends  Component {
             {
                 Header: 'ID',
                 accessor: 'id',
-                Cell: props => <p>{props.value}</p>,
+                Cell: props => <p className="Listbrand-cell" style={{fontWeight: 'bold'}}>{props.value}</p>,
                 filterable: true,
             },
             {
                 Header: 'Nom',
                 accessor: 'name',
-                Cell: props => <p>{props.value}</p>,
+                Cell: props => <p className="Listbrand-cell">{props.value}</p>,
                 filterable: true,
             }
             ];
         return (
             <div>
-                <div style={{ backgroundColor: '#F9F9F9' }}>
+                <div className="Listbrand-buttons">
                     <Button
                         color='#1abc9c'
                         callback={this.handleRefresh}
                         icon={<MdRefresh size={18}/>}
-                        label="Rafraichir les commandes"
-                    />
-                    <ReactTable
-                        loadingText='Rafraichissement des données..'
-                        loading={this.state.loading}
-                        noDataText='Aucune marque..'
-                        data={this.props.data.allBrands}
-                        columns={columns}
-                        style={{
-                            height: '91vh'
-                        }}
+                        label="Rafraichir les marques"
                     />
                 </div>
+                <ReactTable
+                    loadingText='Rafraichissement des données..'
+                    loading={this.state.loading}
+                    noDataText='Aucune marque..'
+                    data={this.props.data.allBrands}
+                    columns={columns}
+                    className="Listbrand-table"
+                    style={{
+                        height: '91vh'
+                    }}
+                />
             </div>
         );
     }

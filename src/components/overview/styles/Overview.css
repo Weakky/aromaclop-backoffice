@@ -1,9 +1,27 @@
+.Overview-container {
+    display: flex;
+    flex-direction: column;
+    background-color: #F9F9F9;
+    height: 100vh;
+}
+
+.Overview-buttons {
+    display: flex;
+    flex-direction: row;
+    padding: 20px;
+    height: 7.5vh;
+    align-items: center;
+}
 
 .Overview-spinner {
     display: flex;
     height: 80vh;
     justify-content: center;
     align-items: center;
+}
+
+.Overview-charts {
+    display: flex;
 }
 
 .Overview-chart {
@@ -14,6 +32,5 @@
 .Overview-summary {
     padding-top: 55px;
     padding-left: 25px;
-    display: inline-block;
     margin-right: 20px;
 }
