@@ -65,7 +65,7 @@ class Overview extends Component {
                         ],
                     }],
                 },
-                component: Pie,
+                component: Bar,
                 summary: " Total des produits: " + allProductCount.count,
             },
             {
@@ -93,7 +93,6 @@ class Overview extends Component {
                 return(
                     <div key={"chart-" + data.datasets[0].label}>
                         <div className="Overview-chart"><Component data={data} options={options} /></div>
-                        <div className="Overview-summary">{summary}</div>
                     </div>
                 );
             },
@@ -103,7 +102,7 @@ class Overview extends Component {
             <div className="Overview-container">
                 <div className="Overview-buttons">
                     <Button
-                        color='#1abc9c'
+                        color='transparent'
                         callback={this.handleRefresh}
                         icon={<MdRefresh size={18}/>}
                         label="Rafraichir les données"

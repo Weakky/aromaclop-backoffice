@@ -78,7 +78,7 @@ class ListOrder extends Component {
             <div>
                 <div className="Listorder-buttons">
                     <Button
-                        color='#1abc9c'
+                        color='transparent'
                         callback={this.handleRefresh}
                         icon={<MdRefresh size={18}/>}
                         label="Rafraichir les commandes"

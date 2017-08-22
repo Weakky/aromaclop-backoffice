@@ -271,7 +271,6 @@ class ListProduct extends Component {
                 sortable: false,
             },
             {
-                Header: 'Edit',
                 width: 78,
                 Cell: ({ original: { id, name, brand, categories, productTaxons, imageUrl } }) => (
                     <p style={{ textAlign: 'center', margin: 0 }}>
@@ -305,7 +304,6 @@ class ListProduct extends Component {
                 sortable: false,
             },
             {
-                Header: 'Delete',
                 width: 78,
                 Cell: (props) => (
                     <p style={{ textAlign: 'center', margin: 0 }}>
@@ -330,7 +328,6 @@ class ListProduct extends Component {
                     onClickAway={() => this.closeCreateModal()}
                 >
                     <div className="Listproduct-header-modal">
-                        <MdAdd style={{ color: '#F9F9F9', marginRight: 5 }} size={16}/>
                         <span className="Listproduct-header-label">
                             {
                                 !this.state.editSingleProduct
@@ -363,15 +360,15 @@ class ListProduct extends Component {
                 </Modal>
                 {
                     !this.state.editable ?
-                    <div style={{ backgroundColor: '#F9F9F9' }} className="Listproduct-buttons">
+                    <div className="Listproduct-buttons">
                         <Button
-                            color='#1abc9c'
+                            color='transparent'
                             callback={this.handleRefresh}
                             icon={<MdRefresh size={18}/>}
                             label="Rafraichir les produits"
                         />
                         <Button
-                            color="#1abc9c"
+                            color='transparent'
                             callback={this.openCreateModal}
                             icon={<MdAdd size={18}/>}
                             label="Ajouter un produit"
@@ -384,7 +381,7 @@ class ListProduct extends Component {
                         />
                     </div>
                         :
-                    <div style={{ backgroundColor: '#0f202e' }} className="Listproduct-buttons">
+                    <div className="Listproduct-buttons">
                         <Button
                             color="#cc6155"
                             callback={this.switchEditMode}
@@ -408,7 +405,7 @@ class ListProduct extends Component {
                     columns={columns}
                     defaultFilterMethod={filterCaseInsensitive}
                     style={{
-                        height: '91vh'
+                        height: '92.5vh'
                     }}
                 />
             </div>

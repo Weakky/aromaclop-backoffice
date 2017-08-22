@@ -3,9 +3,9 @@
     text-decoration: none;
     color: rgba(255, 255, 255, 0.3);
     width: 100%;
-    padding: 5px 5px 5px 15px;
-    font-weight: bold;
-    letter-spacing: 0.5px;
+    padding: 5px 5px 5px 20px;
+    font-weight: 400;
+    letter-spacing: 1px;
 }
 
 .App-link-active {
@@ -14,7 +14,7 @@
 
 .App-link:hover {
     border-left: 3px solid #CC6155;
-    background-color: #172A3A;
+    background-color: #282c36;
 }
 
 .App-link-label {
@@ -27,5 +27,7 @@
 }
 
 .App-separator {
-    margin: 10px 0 10px 0;
+    width: 80%;
+    margin-top: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
 }
