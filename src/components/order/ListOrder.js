@@ -121,7 +121,6 @@ class ListOrder extends Component {
                         return (
                             <ReactTable
                                 noDataText='Aucun article..'
-                                style={{width: "50%"}}
                                 data={row.original.items}
                                 columns={columns}
                                 defaultPageSize={row.original.items ? row.original.items.length : 0}

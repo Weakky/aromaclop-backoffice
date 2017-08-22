@@ -10,6 +10,9 @@ import './styles/Overview.css';
 class Overview extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            loading: false,
+        };
 
         this.handleRefresh = this.handleRefresh.bind(this);
     }
@@ -99,7 +102,7 @@ class Overview extends Component {
         );
 
         return (
-            <div className="Overview-container">
+           <div className="Overview-container">
                 <div className="Overview-buttons">
                     <Button
                         color='transparent'
@@ -108,9 +111,20 @@ class Overview extends Component {
                         label="Rafraichir les données"
                     />
                 </div>
-                <div className="Overview-charts">
-                    {charts}
-                </div>
+               {
+                   this.state.loading ?
+                       <div className="Overview-spinner">
+                           <Spinner
+                               name="ball-clip-rotate-multiple"
+                               color="#d3746a"
+                               noFadeIn
+                           />
+                       </div>
+                       :
+                   <div className="Overview-charts">
+                       {charts}
+                   </div>
+               }
             </div>
         );
     }
