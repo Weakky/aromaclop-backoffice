@@ -20,3 +20,18 @@
     text-transform: uppercase;
     margin: 0 0 0 5px;
 }
+
+.Listbrand-delete {
+    border-radius: 2px;
+    padding: 5px;
+    background-color: #CC6155;
+    cursor: pointer;
+    color: #F9F9F9;
+    line-height: 60px;
+    font-size: 12px;
+}
+
+.Listbrand-delete:hover {
+    background-color: #D3746A;
+    opacity: 0.9;
+}
