@@ -49,7 +49,6 @@ class ListBrands extends Component {
   }
 
   render() {
-    console.log(this.props);
     const columns = [
       {
         Header: "ID",
@@ -71,12 +70,14 @@ class ListBrands extends Component {
         width: 78,
         Cell: props => (
           <p style={{ textAlign: "center", margin: 0 }}>
-            <span
-              className="Listbrand-delete"
-              onClick={() => this.handleDelete(props.row.id)}
-            >
-              <MdClose />
-            </span>
+            {props.row._original.products.length === 0 && (
+              <span
+                className="Listbrand-delete"
+                onClick={() => this.handleDelete(props.row.id)}
+              >
+                <MdClose />
+              </span>
+            )}
           </p>
         )
       }
