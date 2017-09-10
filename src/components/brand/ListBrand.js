@@ -9,7 +9,7 @@ import CreateBrand from "./CreateBrand";
 import Modal from "react-awesome-modal";
 
 import "./styles/Listbrand.css";
-import { MdClose } from "react-icons/lib/md/index";
+import { MdClose, MdEdit } from "react-icons/lib/md/index";
 
 class ListBrands extends Component {
   constructor(props) {
@@ -17,13 +17,32 @@ class ListBrands extends Component {
 
     this.state = {
       loading: false,
-      visible: false
+      visible: false,
+      editSingleBrand: null
     };
 
     this.handleRefresh = this.handleRefresh.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
     this.openCreateModal = this.openCreateModal.bind(this);
     this.closeCreateModal = this.closeCreateModal.bind(this);
+    this.renderCreateOrEditModal = this.renderCreateOrEditModal.bind(this);
+  }
+
+  renderCreateOrEditModal() {
+    const { editSingleBrand } = this.state;
+
+    if (editSingleBrand) {
+      return (
+        <CreateBrand
+          closeModal={this.closeCreateModal}
+          name={editSingleBrand.name}
+          id={editSingleBrand.id}
+          editing
+        />
+      );
+    }
+
+    return <CreateBrand closeModal={this.closeCreateModal} />;
   }
 
   openCreateModal() {
@@ -31,7 +50,7 @@ class ListBrands extends Component {
   }
 
   closeCreateModal() {
-    this.setState({ visible: false });
+    this.setState({ visible: false, editSingleBrand: null });
     this.props.data.refetch();
   }
 
@@ -70,6 +89,23 @@ class ListBrands extends Component {
         width: 78,
         Cell: props => (
           <p style={{ textAlign: "center", margin: 0 }}>
+            <span
+              className="Listbrand-edit"
+              onClick={() =>
+                this.setState({
+                  editSingleBrand: { id: props.row.id, name: props.row.name },
+                  visible: true
+                })}
+            >
+              <MdEdit />
+            </span>
+          </p>
+        )
+      },
+      {
+        width: 78,
+        Cell: props => (
+          <p style={{ textAlign: "center", margin: 0 }}>
             {props.row._original.products.length === 0 && (
               <span
                 className="Listbrand-delete"
@@ -91,7 +127,7 @@ class ListBrands extends Component {
           effect="fadeInUp"
           onClickAway={() => this.closeCreateModal()}
         >
-          <CreateBrand closeModal={this.closeCreateModal} />
+          {this.renderCreateOrEditModal()}
         </Modal>
         <div className="Listbrand-buttons">
           <Button

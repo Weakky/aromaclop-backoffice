@@ -2,18 +2,25 @@ import React, { Component } from "react";
 import proptypes from "prop-types";
 import Button from "../Button";
 import { MdAdd } from "react-icons/lib/md";
-import { graphql } from "react-apollo";
-import { CreateBrandQuery } from "../../graphql/mutations";
+import { graphql, compose } from "react-apollo";
+import {
+  CreateBrandQuery,
+  UpdateBrandQuery,
+  CreateBrandQueryOptions,
+  UpdateBrandQueryOptions
+} from "../../graphql/mutations";
 import CreateProduct from "../products/CreateProduct";
 
 import "./styles/createbrand.css";
+import { MdEdit } from "react-icons/lib/md/index";
 
 class CreateBrand extends Component {
   constructor(props) {
     super(props);
 
     this.initialState = {
-      name: ""
+      name: "",
+      id: ""
     };
 
     this.state = { ...this.initialState };
@@ -21,12 +28,29 @@ class CreateBrand extends Component {
     this.handlePost = this.handlePost.bind(this);
   }
 
-  async handlePost() {
-    await this.props.mutate({
-      variables: { name: this.state.name }
+  componentWillReceiveProps({ name, id }) {
+    this.setState({
+      name,
+      id
     });
+  }
+
+  async handlePost() {
+    this.props.editing ? await this.handleEdit() : await this.handleCreate();
     this.props.closeModal();
     this.setState(this.initialState);
+  }
+
+  async handleEdit() {
+    const { id, name } = this.state;
+
+    await this.props.updateBrand({ id, name });
+  }
+
+  async handleCreate() {
+    const { name } = this.state;
+
+    await this.props.createBrand({ name });
   }
 
   render() {
@@ -45,8 +69,12 @@ class CreateBrand extends Component {
           <Button
             color="#1abc9c"
             callback={this.handlePost}
-            icon={<MdAdd size={18} />}
-            label="Ajouter une marque"
+            icon={
+              this.props.editing ? <MdEdit size={18} /> : <MdAdd size={18} />
+            }
+            label={
+              this.props.editing ? "Modifier une marque" : "Ajouter une marque"
+            }
           />
         )}
       </div>
@@ -55,7 +83,18 @@ class CreateBrand extends Component {
 }
 
 CreateProduct.proptypes = {
-  closeModal: proptypes.func.isRequired
+  closeModal: proptypes.func.isRequired,
+  name: proptypes.string,
+  id: proptypes.string,
+  editing: proptypes.bool
 };
 
-export default graphql(CreateBrandQuery)(CreateBrand);
+CreateBrand.defaultProps = {
+  name: "",
+  editing: false
+};
+
+export default compose(
+  graphql(CreateBrandQuery, CreateBrandQueryOptions),
+  graphql(UpdateBrandQuery, UpdateBrandQueryOptions)
+)(CreateBrand);
