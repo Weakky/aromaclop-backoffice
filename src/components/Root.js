@@ -1,10 +1,12 @@
-import React from 'react';
+import React from "react";
 
-const Root = (props) => (
-    <div
-        style={{
-            display: 'flex',
-        }} {...props} />
+const Root = props => (
+  <div
+    style={{
+      display: "flex"
+    }}
+    {...props}
+  />
 );
 
 export default Root;

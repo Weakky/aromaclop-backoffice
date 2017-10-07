@@ -1,33 +1,33 @@
 .App-link {
-    border-left: 3px solid #0F202E;
-    text-decoration: none;
-    color: rgba(255, 255, 255, 0.3);
-    width: 100%;
-    padding: 5px 5px 5px 20px;
-    font-weight: 400;
-    letter-spacing: 1px;
+  border-left: 3px solid #0f202e;
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.3);
+  width: 100%;
+  padding: 5px 5px 5px 20px;
+  font-weight: 400;
+  letter-spacing: 1px;
 }
 
 .App-link-active {
-    color: #F9F9F9;
+  color: #f9f9f9;
 }
 
 .App-link:hover {
-    border-left: 3px solid #CC6155;
-    background-color: #282c36;
+  border-left: 3px solid #cc6155;
+  background-color: #282c36;
 }
 
 .App-link-label {
-    margin: 10px 0 10px 0;
-    font-size: 11px;
+  margin: 10px 0 10px 0;
+  font-size: 11px;
 }
 
 .App-icon {
-    margin: 10px;
+  margin: 10px;
 }
 
 .App-separator {
-    width: 80%;
-    margin-top: 25px;
-    border: 1px solid rgba(255, 255, 255, 0.06);
+  width: 80%;
+  margin-top: 25px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }

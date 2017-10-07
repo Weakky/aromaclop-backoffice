@@ -1,16 +1,16 @@
 .Imageupload-label {
-    font-size: 14px;
-    font-weight: 600;
-    line-height: 30px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 30px;
 }
 
 .Imageupload-previewText {
-    font-size: 14px;
-    font-weight: normal;
-    line-height: 30px;
-    font-style: italic;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 30px;
+  font-style: italic;
 }
 
 .Imageupload-container {
-    margin-top: 15px;
+  margin-top: 15px;
 }
