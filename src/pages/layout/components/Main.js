@@ -1,14 +1,8 @@
 import React from "react";
+import "../styles/main.css";
 
 const Main = props => (
-  <div
-    style={{
-      flex: 1,
-      height: "100vh",
-      overflow: "auto",
-      backgroundColor: "#F9F9F9"
-    }}
-  >
+  <div className="main">
     <div {...props} />
   </div>
 );

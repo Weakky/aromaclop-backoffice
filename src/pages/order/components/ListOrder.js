@@ -111,9 +111,6 @@ class ListOrder extends Component {
           data={this.props.data.allOrders}
           className="Listorder-table -highlight"
           columns={columns}
-          style={{
-            height: "91vh"
-          }}
           SubComponent={row => {
             const columns = [
               {

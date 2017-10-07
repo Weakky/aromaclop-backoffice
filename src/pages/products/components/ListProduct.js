@@ -408,9 +408,6 @@ class ListProduct extends Component {
           data={this.props.data.allProducts}
           columns={columns}
           defaultFilterMethod={filterCaseInsensitive}
-          style={{
-            height: "92.5vh"
-          }}
         />
       </div>
     );
