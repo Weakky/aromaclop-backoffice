@@ -1,7 +1,7 @@
 import React from "react";
 import { GoTools } from "react-icons/lib/go";
 
-import "./styles/sidebar.css";
+import "../styles/sidebar.css";
 
 const Sidebar = props => (
   <div className="Sidebar-container">

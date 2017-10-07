@@ -1,14 +1,14 @@
 import React, { Component } from "react";
-import { ListAllBrandsQuery } from "../../graphql/queries";
-import { DeleteBrandQuery } from "../../graphql/mutations";
+import { ListAllBrandsQuery } from "../../../graphql/queries/index";
+import { DeleteBrandQuery } from "../../../graphql/mutations/index";
 import { graphql, compose } from "react-apollo";
-import Button from "../Button";
+import Button from "../../common/components/Button";
 import { MdRefresh, MdAdd } from "react-icons/lib/md";
 import ReactTable from "react-table";
 import CreateBrand from "./CreateBrand";
 import Modal from "react-awesome-modal";
 
-import "./styles/Listbrand.css";
+import "../styles/Listbrand.css";
 import { MdClose, MdEdit } from "react-icons/lib/md/index";
 
 class ListBrands extends Component {

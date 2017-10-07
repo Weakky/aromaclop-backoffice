@@ -1,14 +1,14 @@
 import React, { Component } from "react";
 
-import Root from "./components/Root";
-import Sidebar from "./components/Sidebar";
-import SidebarItem from "./components/SidebarItem";
-import Main from "./components/Main";
+import Root from "./pages/layout/components/Root";
+import Sidebar from "./pages/layout/components/Sidebar";
+import SidebarItem from "./pages/layout/components/SidebarItem";
+import Main from "./pages/layout/components/Main";
 
-import ListProduct from "./components/products/ListProduct";
-import ListOrder from "./components/order/ListOrder";
-import ListBrands from "./components/brand/ListBrand";
-import Overview from "./components/overview/Overview";
+import ListProduct from "./pages/products/components/ListProduct";
+import ListOrder from "./pages/order/components/ListOrder";
+import ListBrands from "./pages/brand/components/ListBrand";
+import Overview from "./pages/overview/components/Overview";
 import ApolloClient, { createNetworkInterface } from "apollo-client";
 import { ApolloProvider } from "react-apollo";
 import {

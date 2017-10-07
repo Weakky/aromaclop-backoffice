@@ -1,7 +1,7 @@
 import React from "react";
 import proptypes from "prop-types";
 
-import "./styles/imageupload.css";
+import "../styles/imageupload.css";
 
 export default class ImageUpload extends React.Component {
   constructor(props) {

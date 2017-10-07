@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import { graphql } from "react-apollo";
 import ReactTable from "react-table";
-import { ListAllOrdersQuery } from "../../graphql/queries";
+import { ListAllOrdersQuery } from "../../../graphql/queries/index";
 import { MdRefresh } from "react-icons/lib/md";
-import Button from "../Button";
+import Button from "../../common/components/Button";
 
-import "./styles/Listorder.css";
+import "../styles/Listorder.css";
 
 class ListOrder extends Component {
   constructor(props) {

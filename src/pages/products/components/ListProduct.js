@@ -16,7 +16,7 @@ import {
 import Modal from "react-awesome-modal";
 
 import CreateProduct from "./CreateProduct";
-import Button from "../Button";
+import Button from "../../common/components/Button";
 import Resume from "./Resume";
 
 import {
@@ -24,11 +24,11 @@ import {
   UpdateAvailabilityQueryOptions,
   DeleteProductQuery,
   DeleteProductQueryOptions
-} from "../../graphql/mutations";
+} from "../../../graphql/mutations/index";
 
-import { ListAllProductsQuery } from "../../graphql/queries";
+import { ListAllProductsQuery } from "../../../graphql/queries/index";
 
-import "./styles/listproduct.css";
+import "../styles/listproduct.css";
 import "react-table/react-table.css";
 
 const filterCaseInsensitive = (filter, row) => {

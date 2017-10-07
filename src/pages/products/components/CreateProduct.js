@@ -19,11 +19,11 @@ import {
   CreateProductTaxonsMutationOptions,
   DeleteProductTaxonsMutation,
   DeleteProductTaxonsMutationOptions
-} from "../../graphql/mutations";
+} from "../../../graphql/mutations/index";
 
-import { AllDetailsQuery } from "../../graphql/queries";
+import { AllDetailsQuery } from "../../../graphql/queries/index";
 
-import "./styles/createproduct.css";
+import "../styles/createproduct.css";
 import "react-select/dist/react-select.css";
 
 class CreateProduct extends Component {

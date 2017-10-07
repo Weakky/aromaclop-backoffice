@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import proptypes from "prop-types";
-import Button from "../Button";
+import Button from "../../common/components/Button";
 import { MdAdd } from "react-icons/lib/md";
 import { graphql, compose } from "react-apollo";
 import {
@@ -8,10 +8,10 @@ import {
   UpdateBrandQuery,
   CreateBrandQueryOptions,
   UpdateBrandQueryOptions
-} from "../../graphql/mutations";
-import CreateProduct from "../products/CreateProduct";
+} from "../../../graphql/mutations/index";
+import CreateProduct from "../../products/components/CreateProduct";
 
-import "./styles/createbrand.css";
+import "../styles/createbrand.css";
 import { MdEdit } from "react-icons/lib/md/index";
 
 class CreateBrand extends Component {

@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import { Bar } from "react-chartjs-2";
 import { gql, graphql } from "react-apollo";
-import Button from "../Button";
+import Button from "../../common/components/Button";
 import { MdRefresh } from "react-icons/lib/md";
 import Spinner from "react-spinkit";
 
-import "./styles/Overview.css";
+import "../styles/Overview.css";
 
 class Overview extends Component {
   constructor(props) {

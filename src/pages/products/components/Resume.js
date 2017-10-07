@@ -2,7 +2,7 @@ import React from "react";
 import proptypes from "prop-types";
 import { GoPlus, GoDash } from "react-icons/lib/go";
 
-import "./styles/resume.css";
+import "../styles/resume.css";
 
 const Resume = props => {
   return (

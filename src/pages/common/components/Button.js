@@ -1,7 +1,7 @@
 import React from "react";
 import proptypes from "prop-types";
 
-import "./styles/button.css";
+import "../styles/button.css";
 
 const Button = props => {
   return (
