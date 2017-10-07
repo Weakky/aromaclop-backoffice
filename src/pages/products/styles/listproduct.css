@@ -3,15 +3,6 @@
   box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.1);
 }
 
-.Listproduct-buttons {
-  display: flex;
-  flex-direction: row;
-  padding: 20px;
-  height: 7.5vh;
-  align-items: center;
-  background-color: #1d2027;
-}
-
 .Listproduct-messages {
   display: flex;
   flex-direction: column;

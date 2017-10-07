@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { ListAllBrandsQuery } from "../../../graphql/queries/index";
 import { DeleteBrandQuery } from "../../../graphql/mutations/index";
 import { graphql, compose } from "react-apollo";
-import Button from "../../common/components/Button";
+import Buttons from "../../common/components/Buttons";
 import { MdRefresh, MdAdd } from "react-icons/lib/md";
 import ReactTable from "react-table";
 import CreateBrand from "./CreateBrand";
@@ -26,6 +26,20 @@ class ListBrands extends Component {
     this.openCreateModal = this.openCreateModal.bind(this);
     this.closeCreateModal = this.closeCreateModal.bind(this);
     this.renderCreateOrEditModal = this.renderCreateOrEditModal.bind(this);
+  }
+
+  renderModal() {
+    return (
+      <Modal
+        visible={this.state.visible}
+        width="300"
+        height="130"
+        effect="fadeInUp"
+        onClickAway={() => this.closeCreateModal()}
+      >
+        {this.renderCreateOrEditModal()}
+      </Modal>
+    );
   }
 
   renderCreateOrEditModal() {
@@ -118,31 +132,24 @@ class ListBrands extends Component {
         )
       }
     ];
+    const buttons = [
+      {
+        color: "transparent",
+        callback: this.handleRefresh,
+        icon: <MdRefresh size={18} />,
+        label: "Rafraichir les marques"
+      },
+      {
+        color: "transparent",
+        callback: this.openCreateModal,
+        icon: <MdAdd size={18} />,
+        label: "Ajouter une marque"
+      }
+    ];
     return (
       <div>
-        <Modal
-          visible={this.state.visible}
-          width="300"
-          height="130"
-          effect="fadeInUp"
-          onClickAway={() => this.closeCreateModal()}
-        >
-          {this.renderCreateOrEditModal()}
-        </Modal>
-        <div className="Listbrand-buttons">
-          <Button
-            color="transparent"
-            callback={this.handleRefresh}
-            icon={<MdRefresh size={18} />}
-            label="Rafraichir les marques"
-          />
-          <Button
-            color="transparent"
-            callback={this.openCreateModal}
-            icon={<MdAdd size={18} />}
-            label="Ajouter une marque"
-          />
-        </div>
+        {this.renderModal()}
+        <Buttons buttons={buttons} />
         <ReactTable
           loadingText="Rafraichissement des données.."
           loading={this.state.loading}

@@ -16,8 +16,8 @@ import {
 import Modal from "react-awesome-modal";
 
 import CreateProduct from "./CreateProduct";
-import Button from "../../common/components/Button";
 import Resume from "./Resume";
+import Buttons from "../../common/components/Buttons";
 
 import {
   UpdateAvailabilityQuery,
@@ -321,7 +321,40 @@ class ListProduct extends Component {
         )
       }
     ];
-
+    const buttons = [
+      {
+        color: "transparent",
+        callback: this.handleRefresh,
+        icon: <MdRefresh size={18} />,
+        label: "Rafraichir les produits"
+      },
+      {
+        color: "transparent",
+        callback: this.openCreateModal,
+        icon: <MdAdd size={18} />,
+        label: "Ajouter un produit"
+      },
+      {
+        color: "#1abc9c",
+        callback: this.switchEditMode,
+        icon: <MdCreate size={18} />,
+        label: "Entrer en mode édition"
+      }
+    ];
+    const editButtons = [
+      {
+        color: "#cc6155",
+        callback: this.switchEditMode,
+        icon: <MdKeyboardArrowLeft size={18} />,
+        label: "Sortir du mode édition"
+      },
+      {
+        color: "#1abc9c",
+        callback: this.applyTaxonsChanges,
+        icon: <MdCheck size={18} />,
+        label: "Appliquer les modifications"
+      }
+    ];
     return (
       <div>
         <Modal
@@ -366,43 +399,7 @@ class ListProduct extends Component {
             ))}
           </div>
         </Modal>
-        {!this.state.editable ? (
-          <div className="Listproduct-buttons">
-            <Button
-              color="transparent"
-              callback={this.handleRefresh}
-              icon={<MdRefresh size={18} />}
-              label="Rafraichir les produits"
-            />
-            <Button
-              color="transparent"
-              callback={this.openCreateModal}
-              icon={<MdAdd size={18} />}
-              label="Ajouter un produit"
-            />
-            <Button
-              color="#1abc9c"
-              callback={this.switchEditMode}
-              icon={<MdCreate size={18} />}
-              label="Entrer en mode édition"
-            />
-          </div>
-        ) : (
-          <div className="Listproduct-buttons">
-            <Button
-              color="#cc6155"
-              callback={this.switchEditMode}
-              icon={<MdKeyboardArrowLeft size={18} />}
-              label="Sortir du mode édition"
-            />
-            <Button
-              color="#1abc9c"
-              callback={this.applyTaxonsChanges}
-              icon={<MdCheck size={18} />}
-              label="Appliquer les modifications"
-            />
-          </div>
-        )}
+        <Buttons buttons={this.state.editable ? editButtons : buttons} />
         <ReactTable
           loadingText="Rafraichissement des données.."
           loading={this.state.loading}

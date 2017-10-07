@@ -3,7 +3,7 @@ import { graphql } from "react-apollo";
 import ReactTable from "react-table";
 import { ListAllOrdersQuery } from "../../../graphql/queries/index";
 import { MdRefresh } from "react-icons/lib/md";
-import Button from "../../common/components/Button";
+import Buttons from "../../common/components/Buttons";
 
 import "../styles/Listorder.css";
 
@@ -93,17 +93,17 @@ class ListOrder extends Component {
         )
       }
     ];
-
+    const buttons = [
+      {
+        color: "transparent",
+        callback: this.handleRefresh,
+        icon: <MdRefresh size={18} />,
+        label: "Rafraichir les commandes"
+      }
+    ];
     return (
       <div>
-        <div className="Listorder-buttons">
-          <Button
-            color="transparent"
-            callback={this.handleRefresh}
-            icon={<MdRefresh size={18} />}
-            label="Rafraichir les commandes"
-          />
-        </div>
+        <Buttons buttons={buttons} />
         <ReactTable
           loadingText="Rafraichissement des données.."
           loading={this.state.loading}
