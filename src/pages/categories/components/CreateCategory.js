@@ -4,16 +4,16 @@ import Button from "../../common/components/Button";
 import { MdAdd } from "react-icons/lib/md";
 import { graphql, compose } from "react-apollo";
 import {
-  CreateBrandQuery,
-  UpdateBrandQuery,
-  CreateBrandQueryOptions,
-  UpdateBrandQueryOptions
+  CreateCategoryQuery,
+  CreateCategoryQueryOptions,
+  UpdateCategoryQuery,
+  UpdateCategoryQueryOptions
 } from "../../../graphql/mutations/index";
 
-import "../styles/createbrand.css";
+import "../styles/CreateCategory.css";
 import { MdEdit } from "react-icons/lib/md/index";
 
-class CreateBrand extends Component {
+class CreateCategory extends Component {
   constructor(props) {
     super(props);
 
@@ -43,22 +43,22 @@ class CreateBrand extends Component {
   async handleEdit() {
     const { id, name } = this.state;
 
-    await this.props.updateBrand({ id, name });
+    await this.props.updateCategory({ id, name });
   }
 
   async handleCreate() {
     const { name } = this.state;
 
-    await this.props.createBrand({ name });
+    await this.props.createCategory({ name });
   }
 
   render() {
     return (
-      <div className="Createbrand-container">
-        <label className="Createbrand-label">
-          Nom de la marque
+      <div className="CreateCategory-container">
+        <label className="CreateCategory-label">
+          Nom de la catégorie
           <input
-            className="Createbrand-input"
+            className="CreateCategory-input"
             value={this.state.name}
             placeholder="..."
             onChange={e => this.setState({ name: e.target.value })}
@@ -72,7 +72,11 @@ class CreateBrand extends Component {
               this.props.editing ? <MdEdit size={18} /> : <MdAdd size={18} />
             }
             label={
-              this.props.editing ? "Modifier une marque" : "Ajouter une marque"
+              this.props.editing ? (
+                "Modifier une catégorie"
+              ) : (
+                "Ajouter une catégorie"
+              )
             }
           />
         )}
@@ -81,19 +85,19 @@ class CreateBrand extends Component {
   }
 }
 
-CreateBrand.proptypes = {
+CreateCategory.proptypes = {
   closeModal: proptypes.func.isRequired,
   name: proptypes.string,
   id: proptypes.string,
   editing: proptypes.bool
 };
 
-CreateBrand.defaultProps = {
+CreateCategory.defaultProps = {
   name: "",
   editing: false
 };
 
 export default compose(
-  graphql(CreateBrandQuery, CreateBrandQueryOptions),
-  graphql(UpdateBrandQuery, UpdateBrandQueryOptions)
-)(CreateBrand);
+  graphql(CreateCategoryQuery, CreateCategoryQueryOptions),
+  graphql(UpdateCategoryQuery, UpdateCategoryQueryOptions)
+)(CreateCategory);

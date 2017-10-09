@@ -1,6 +1,24 @@
 import { gql } from "react-apollo";
 import { ListAllProductsQuery } from "../queries";
 
+export const UpdateCategoryQuery = gql`
+  mutation updateCategory($id: ID!, $name: String!) {
+    updateCategory(id: $id, name: $name) {
+      id
+      name
+    }
+  }
+`;
+
+export const UpdateCategoryQueryOptions = {
+  props: ({ mutate }) => ({
+    updateCategory: ({ id, name }) =>
+      mutate({
+        variables: { id, name }
+      })
+  })
+};
+
 export const UpdateBrandQuery = gql`
   mutation updateBrand($id: ID!, $name: String!) {
     updateBrand(id: $id, name: $name) {
@@ -15,6 +33,23 @@ export const UpdateBrandQueryOptions = {
     updateBrand: ({ id, name }) =>
       mutate({
         variables: { id, name }
+      })
+  })
+};
+
+export const CreateCategoryQuery = gql`
+  mutation createCategory($name: String!) {
+    createCategory(name: $name) {
+      name
+    }
+  }
+`;
+
+export const CreateCategoryQueryOptions = {
+  props: ({ mutate }) => ({
+    createCategory: ({ name }) =>
+      mutate({
+        variables: { name }
       })
   })
 };
@@ -35,6 +70,14 @@ export const CreateBrandQueryOptions = {
       })
   })
 };
+
+export const DeleteCategoryQuery = gql`
+  mutation deleteCategory($id: ID!) {
+    deleteCategory(id: $id) {
+      id
+    }
+  }
+`;
 
 export const DeleteBrandQuery = gql`
   mutation deleteBrand($id: ID!) {
