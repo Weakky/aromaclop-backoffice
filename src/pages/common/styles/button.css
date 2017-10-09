@@ -21,7 +21,7 @@
 
 .Button-link-label {
   margin: 0 5px 0 5px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 400;
-  letter-spacing: 1px;
+  font-family: 'Roboto', sans-serif;
 }

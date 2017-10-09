@@ -30,6 +30,7 @@ import { ListAllProductsQuery } from "../../../graphql/queries/index";
 
 import "../styles/listproduct.css";
 import "react-table/react-table.css";
+import "../../common/styles/Reactable.css";
 
 const filterCaseInsensitive = (filter, row) => {
   const id = filter.pivotId || filter.id;
@@ -195,33 +196,23 @@ class ListProduct extends Component {
           <img
             alt="product"
             style={{ height: 60, width: 60 }}
+            className="Reactable-img"
             src={props.value}
           />
         ),
         width: 75
       },
       {
-        Header: "ID",
-        accessor: "id",
-        Cell: props => (
-          <p className="Listproduct-cell" style={{ fontWeight: "bold" }}>
-            {props.value}
-          </p>
-        ),
-        filterable: true,
-        width: 250
-      },
-      {
         Header: "Nom",
         accessor: "name",
-        Cell: props => <p className="Listproduct-cell">{props.value}</p>,
+        Cell: props => <p className="Reactable-cell">{props.value}</p>,
         filterable: true,
         width: 250
       },
       {
         Header: "Marque",
         accessor: "brand.name",
-        Cell: props => <p className="Listproduct-cell">{props.value}</p>,
+        Cell: props => <p className="Reactable-cell">{props.value}</p>,
         filterable: true,
         width: 250
       },
@@ -229,9 +220,9 @@ class ListProduct extends Component {
         Header: "Catégorie",
         accessor: "categories",
         Cell: props => (
-          <div className="Listproduct-cell-container">
+          <div className="Reactable-cell-container">
             {props.original.categories.map((prop, k) => (
-              <span key={k} className="Listproduct-vignette">
+              <span key={k} className="Reactable-vignette">
                 {prop.name}
               </span>
             ))}
@@ -244,7 +235,7 @@ class ListProduct extends Component {
         width: 250,
         accessor: "productTaxons",
         Cell: ({ value: productsTaxons }) => (
-          <div className="Listproduct-cell-container">
+          <div className="Reactable-cell-container">
             {_(productsTaxons)
               .sortBy(({ taxon }) => {
                 const value = parseInt(taxon.name, 10);
@@ -257,7 +248,7 @@ class ListProduct extends Component {
                     backgroundColor: this.taxonBackgroundColor(productTaxon),
                     cursor: this.state.editable && "pointer"
                   }}
-                  className="Listproduct-vignette"
+                  className="Reactable-vignette"
                   key={i}
                   onClick={() =>
                     this.state.editable && this.updateTaxons(productTaxon)}
@@ -298,7 +289,7 @@ class ListProduct extends Component {
                   },
                   visible: true
                 })}
-              className="Listproduct-edit"
+              className="Reactable-edit"
             >
               <MdEdit />
             </span>
@@ -313,7 +304,7 @@ class ListProduct extends Component {
           <p style={{ textAlign: "center", margin: 0 }}>
             <span
               onClick={() => this.handleDelete(props.row.id)}
-              className="Listproduct-delete"
+              className="Reactable-delete"
             >
               <MdClose />
             </span>
@@ -404,7 +395,7 @@ class ListProduct extends Component {
           loadingText="Rafraichissement des données.."
           loading={this.state.loading}
           noDataText="Chargement des données.."
-          className="Listproduct-table -highlight"
+          className="Reactable-table -highlight"
           data={this.props.data.allProducts}
           columns={columns}
           defaultFilterMethod={filterCaseInsensitive}

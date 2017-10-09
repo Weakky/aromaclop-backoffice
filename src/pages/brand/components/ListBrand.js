@@ -4,12 +4,13 @@ import { DeleteBrandQuery } from "../../../graphql/mutations/index";
 import { graphql, compose } from "react-apollo";
 import Buttons from "../../common/components/Buttons";
 import { MdRefresh, MdAdd } from "react-icons/lib/md";
+import { MdClose, MdEdit } from "react-icons/lib/md/index";
 import ReactTable from "react-table";
 import CreateBrand from "./CreateBrand";
 import Modal from "react-awesome-modal";
 
 import "../styles/Listbrand.css";
-import { MdClose, MdEdit } from "react-icons/lib/md/index";
+import "../../common/styles/Reactable.css";
 
 class ListBrands extends Component {
   constructor(props) {
@@ -87,7 +88,7 @@ class ListBrands extends Component {
         Header: "ID",
         accessor: "id",
         Cell: props => (
-          <p className="Listbrand-cell" style={{ fontWeight: "bold" }}>
+          <p className="Reactable-cell" style={{ fontWeight: "bold" }}>
             {props.value}
           </p>
         ),
@@ -96,7 +97,7 @@ class ListBrands extends Component {
       {
         Header: "Nom",
         accessor: "name",
-        Cell: props => <p className="Listbrand-cell">{props.value}</p>,
+        Cell: props => <p className="Reactable-cell">{props.value}</p>,
         filterable: true
       },
       {
@@ -104,7 +105,7 @@ class ListBrands extends Component {
         Cell: props => (
           <p style={{ textAlign: "center", margin: 0 }}>
             <span
-              className="Listbrand-edit"
+              className="Reactable-edit"
               onClick={() =>
                 this.setState({
                   editSingleBrand: { id: props.row.id, name: props.row.name },
@@ -122,7 +123,7 @@ class ListBrands extends Component {
           <p style={{ textAlign: "center", margin: 0 }}>
             {props.row._original.products.length === 0 && (
               <span
-                className="Listbrand-delete"
+                className="Reactable-delete"
                 onClick={() => this.handleDelete(props.row.id)}
               >
                 <MdClose />
@@ -156,7 +157,7 @@ class ListBrands extends Component {
           noDataText="Aucune marque.."
           data={this.props.data.allBrands}
           columns={columns}
-          className="Listbrand-table"
+          className="Reactable-table"
           style={{
             height: "91vh"
           }}

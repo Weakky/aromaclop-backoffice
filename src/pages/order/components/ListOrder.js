@@ -6,6 +6,7 @@ import { MdRefresh } from "react-icons/lib/md";
 import Buttons from "../../common/components/Buttons";
 
 import "../styles/Listorder.css";
+import "../../common/styles/Reactable.css";
 
 class ListOrder extends Component {
   constructor(props) {
@@ -29,7 +30,7 @@ class ListOrder extends Component {
         Header: "ID",
         accessor: "id",
         Cell: props => (
-          <p className="Listorder-cell" style={{ fontWeight: "bold" }}>
+          <p className="Reactable-cell" style={{ fontWeight: "bold" }}>
             {props.value}
           </p>
         ),
@@ -39,7 +40,7 @@ class ListOrder extends Component {
         Header: "Etat",
         accessor: "state",
         Cell: props => (
-          <p className="Listorder-cell">
+          <p className="Reactable-cell">
             {
               {
                 PROCESSING: "Traitement en cours",
@@ -67,7 +68,7 @@ class ListOrder extends Component {
         Header: "Client",
         accessor: "owner",
         Cell: props => (
-          <p className="Listorder-cell">
+          <p className="Reactable-cell">
             {props.value.firstName} {props.value.lastName.toUpperCase()}
           </p>
         ),
@@ -89,7 +90,7 @@ class ListOrder extends Component {
         Header: "Date de creation",
         accessor: "createdAt",
         Cell: props => (
-          <p className="Listorder-cell">{props.value.substring(0, 10)}</p>
+          <p className="Reactable-cell">{props.value.substring(0, 10)}</p>
         )
       }
     ];
@@ -109,8 +110,11 @@ class ListOrder extends Component {
           loading={this.state.loading}
           noDataText="Aucune commande.."
           data={this.props.data.allOrders}
-          className="Listorder-table -highlight"
+          className="Reactable-table -highlight"
           columns={columns}
+          style={{
+            height: "91vh"
+          }}
           SubComponent={row => {
             const columns = [
               {
@@ -118,6 +122,7 @@ class ListOrder extends Component {
                 accessor: "taxon.product.imageUrl",
                 Cell: props => (
                   <img
+                    className="Reactable-img"
                     alt="product"
                     style={{ height: 60, width: 60 }}
                     src={props.value}
@@ -127,17 +132,17 @@ class ListOrder extends Component {
               {
                 Header: "Produit",
                 accessor: "taxon.product.name",
-                Cell: props => <p>{props.value}</p>
+                Cell: props => <p className="Reactable-cell">{props.value}</p>
               },
               {
                 Header: "Catégorie",
                 accessor: "taxon.taxon.name",
-                Cell: props => <p>{props.value}</p>
+	              Cell: props => <p className="Reactable-cell">{props.value}</p>
               },
               {
                 Header: "Quantité",
                 accessor: "quantity",
-                Cell: props => <p>{props.value}</p>
+	              Cell: props => <p className="Reactable-cell">{props.value}</p>
               }
             ];
 

@@ -18,11 +18,11 @@ import {
   NavLink
 } from "react-router-dom";
 import {
-  MdEqualizer,
-  MdReorder,
-  MdShoppingCart,
-  MdBusinessCenter
-} from "react-icons/lib/md";
+	TiBriefcase,
+	TiChartAreaOutline,
+	TiShoppingBag,
+	TiShoppingCart,
+} from "react-icons/lib/ti";
 
 import "./App.css";
 import "tachyons";
@@ -40,20 +40,22 @@ class App extends Component {
   render() {
     const tree = [
       {
+        title: "Dashboard",
         name: "Overview",
-        icon: <MdEqualizer size={18} className="App-icon" />
+        icon: <TiChartAreaOutline size={19} className="App-icon" />
       },
       {
+        title: "Components",
         name: "Produits",
-        icon: <MdReorder size={18} className="App-icon" />
+        icon: <TiShoppingBag size={19} className="App-icon" />
       },
       {
         name: "Commandes",
-        icon: <MdShoppingCart size={18} className="App-icon" />
+        icon: <TiShoppingCart size={19} className="App-icon" />
       },
       {
         name: "Marques",
-        icon: <MdBusinessCenter size={18} className="App-icon" />
+        icon: <TiBriefcase size={19} className="App-icon" />
       }
     ];
 
@@ -64,6 +66,7 @@ class App extends Component {
             <Sidebar>
               {tree.map(leaf => (
                 <SidebarItem key={leaf.name}>
+                  {leaf.title && <p className="App-link-title">{leaf.title}</p>}
                   <NavLink
                     activeClassName="App-link-active"
                     className="App-link"
