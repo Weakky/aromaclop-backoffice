@@ -1,5 +1,18 @@
 import { gql } from "react-apollo";
 
+export const ListAllTaxonsQuery = gql`
+	query allTaxons {
+		allTaxons {
+			id
+			createdAt
+			name
+			availabilities {
+				id
+			}
+		}
+	}
+`;
+
 export const ListAllCategoriesQuery = gql`
   query allCategories {
     allCategories {

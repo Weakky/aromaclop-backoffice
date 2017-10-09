@@ -6,9 +6,10 @@ import SidebarItem from "./pages/layout/components/SidebarItem";
 import Main from "./pages/layout/components/Main";
 
 import ListProduct from "./pages/products/components/ListProduct";
-import ListOrder from "./pages/order/components/ListOrder";
-import ListBrands from "./pages/brand/components/ListBrand";
-import ListCategories from "./pages/categories/components/ListCategory";
+import ListOrder from "./pages/orders/components/ListOrder";
+import ListBrand from "./pages/brands/components/ListBrand";
+import ListCategorie from "./pages/categories/components/ListCategory";
+import ListTaxon from "./pages/taxons/components/ListTaxon";
 import Overview from "./pages/overview/components/Overview";
 import ApolloClient, { createNetworkInterface } from "apollo-client";
 import { ApolloProvider } from "react-apollo";
@@ -24,10 +25,9 @@ import {
   TiShoppingBag,
   TiShoppingCart,
   TiBookmark,
-	TiGroupOutline,
-	TiChartLineOutline,
-	TiPipette,
-	TiImageOutline
+  TiGroupOutline,
+  TiChartLineOutline,
+  TiPipette
 } from "react-icons/lib/ti";
 
 import "./App.css";
@@ -54,11 +54,11 @@ class App extends Component {
         name: "Revenus",
         icon: <TiChartLineOutline size={19} className="App-icon" />
       },
-	    {
-		    title: "E-Commerce",
-		    name: "Commandes",
-		    icon: <TiShoppingCart size={19} className="App-icon" />
-	    },
+      {
+        title: "E-Commerce",
+        name: "Commandes",
+        icon: <TiShoppingCart size={19} className="App-icon" />
+      },
       {
         name: "Clients",
         icon: <TiGroupOutline size={19} className="App-icon" />
@@ -79,7 +79,7 @@ class App extends Component {
       {
         name: "Taxons",
         icon: <TiPipette size={19} className="App-icon" />
-      },
+      }
     ];
 
     return (
@@ -110,12 +110,13 @@ class App extends Component {
               <Route exact={true} path="/Statistiques" component={Overview} />
               <Route exact={true} path="/Produits" component={ListProduct} />
               <Route exact={true} path="/Commandes" component={ListOrder} />
-              <Route exact={true} path="/Marques" component={ListBrands} />
+              <Route exact={true} path="/Marques" component={ListBrand} />
               <Route
                 exact={true}
                 path="/Categories"
-                component={ListCategories}
+                component={ListCategorie}
               />
+              <Route exact={true} path="/Taxons" component={ListTaxon} />
             </Main>
           </Root>
         </Router>
