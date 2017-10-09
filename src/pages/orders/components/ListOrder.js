@@ -118,7 +118,6 @@ class ListOrder extends Component {
           SubComponent={row => {
             const columns = [
               {
-                Header: "Article",
                 accessor: "taxon.product.imageUrl",
                 Cell: props => (
                   <img
@@ -130,33 +129,36 @@ class ListOrder extends Component {
                 )
               },
               {
-                Header: "Produit",
+                Header: "Nom",
                 accessor: "taxon.product.name",
                 Cell: props => <p className="Reactable-cell">{props.value}</p>
               },
               {
-                Header: "Catégorie",
+                Header: "Taxon",
                 accessor: "taxon.taxon.name",
-	              Cell: props => <p className="Reactable-cell">{props.value}</p>
+                Cell: props => <p className="Reactable-cell">{props.value}</p>
               },
               {
                 Header: "Quantité",
                 accessor: "quantity",
-	              Cell: props => <p className="Reactable-cell">{props.value}</p>
+                Cell: props => <p className="Reactable-cell">{props.value}</p>
               }
             ];
 
             return (
-              <ReactTable
-                noDataText="Aucun article.."
-                data={row.original.items}
-                columns={columns}
-                defaultPageSize={
-                  row.original.items ? row.original.items.length : 0
-                }
-                showPagination={false}
-                sortable={false}
-              />
+              <div className="Reactable-container-subTable">
+                <ReactTable
+                  className="Reactable-subTable"
+                  noDataText="Aucun article.."
+                  data={row.original.items}
+                  columns={columns}
+                  defaultPageSize={
+                    row.original.items ? row.original.items.length : 0
+                  }
+                  showPagination={false}
+                  sortable={false}
+                />
+              </div>
             );
           }}
         />
