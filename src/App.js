@@ -23,7 +23,11 @@ import {
   TiChartAreaOutline,
   TiShoppingBag,
   TiShoppingCart,
-  TiBookmark
+  TiBookmark,
+	TiGroupOutline,
+	TiChartLineOutline,
+	TiPipette,
+	TiImageOutline
 } from "react-icons/lib/ti";
 
 import "./App.css";
@@ -42,18 +46,27 @@ class App extends Component {
   render() {
     const tree = [
       {
-        title: "Dashboard",
-        name: "Overview",
+        title: "Vue d'ensemble",
+        name: "Statistiques",
         icon: <TiChartAreaOutline size={19} className="App-icon" />
       },
       {
-        title: "Components",
-        name: "Produits",
-        icon: <TiShoppingBag size={19} className="App-icon" />
+        name: "Revenus",
+        icon: <TiChartLineOutline size={19} className="App-icon" />
+      },
+	    {
+		    title: "E-Commerce",
+		    name: "Commandes",
+		    icon: <TiShoppingCart size={19} className="App-icon" />
+	    },
+      {
+        name: "Clients",
+        icon: <TiGroupOutline size={19} className="App-icon" />
       },
       {
-        name: "Commandes",
-        icon: <TiShoppingCart size={19} className="App-icon" />
+        title: "Gestion du stock",
+        name: "Produits",
+        icon: <TiShoppingBag size={19} className="App-icon" />
       },
       {
         name: "Marques",
@@ -62,7 +75,11 @@ class App extends Component {
       {
         name: "Categories",
         icon: <TiBookmark size={19} className="App-icon" />
-      }
+      },
+      {
+        name: "Taxons",
+        icon: <TiPipette size={19} className="App-icon" />
+      },
     ];
 
     return (
@@ -90,7 +107,7 @@ class App extends Component {
                 path="/"
                 render={() => <Redirect from="/" to="/Overview" />}
               />
-              <Route exact={true} path="/Overview" component={Overview} />
+              <Route exact={true} path="/Statistiques" component={Overview} />
               <Route exact={true} path="/Produits" component={ListProduct} />
               <Route exact={true} path="/Commandes" component={ListOrder} />
               <Route exact={true} path="/Marques" component={ListBrands} />
