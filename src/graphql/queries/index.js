@@ -1,5 +1,18 @@
 import { gql } from "react-apollo";
 
+export const ListAllCategoriesQuery = gql`
+  query allCategories {
+    allCategories {
+      id
+      createdAt
+      name
+      products {
+        name
+      }
+    }
+  }
+`;
+
 export const ListAllProductsQuery = gql`
   query allProducts {
     allProducts {

@@ -8,6 +8,7 @@ import Main from "./pages/layout/components/Main";
 import ListProduct from "./pages/products/components/ListProduct";
 import ListOrder from "./pages/order/components/ListOrder";
 import ListBrands from "./pages/brand/components/ListBrand";
+import ListCategories from "./pages/categories/components/ListCategory";
 import Overview from "./pages/overview/components/Overview";
 import ApolloClient, { createNetworkInterface } from "apollo-client";
 import { ApolloProvider } from "react-apollo";
@@ -18,10 +19,11 @@ import {
   NavLink
 } from "react-router-dom";
 import {
-	TiBriefcase,
-	TiChartAreaOutline,
-	TiShoppingBag,
-	TiShoppingCart,
+  TiBriefcase,
+  TiChartAreaOutline,
+  TiShoppingBag,
+  TiShoppingCart,
+  TiBookmark
 } from "react-icons/lib/ti";
 
 import "./App.css";
@@ -56,6 +58,10 @@ class App extends Component {
       {
         name: "Marques",
         icon: <TiBriefcase size={19} className="App-icon" />
+      },
+      {
+        name: "Categories",
+        icon: <TiBookmark size={19} className="App-icon" />
       }
     ];
 
@@ -88,6 +94,11 @@ class App extends Component {
               <Route exact={true} path="/Produits" component={ListProduct} />
               <Route exact={true} path="/Commandes" component={ListOrder} />
               <Route exact={true} path="/Marques" component={ListBrands} />
+              <Route
+                exact={true}
+                path="/Categories"
+                component={ListCategories}
+              />
             </Main>
           </Root>
         </Router>
