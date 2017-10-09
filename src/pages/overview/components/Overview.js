@@ -70,7 +70,7 @@ class Overview extends Component {
           labels: ["Traitement en cours", "Traitées"],
           datasets: [
             {
-              label: "order-count",
+              label: "orders-count",
               data: [processingOrders.count, processedOrders.count],
               backgroundColor: "rgba(0,102,204,0.5)",
               borderColor: "rgba(0,91,183,0.5)",

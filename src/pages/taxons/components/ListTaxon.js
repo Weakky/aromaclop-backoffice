@@ -1,18 +1,18 @@
 import React, { Component } from "react";
 import { graphql, compose } from "react-apollo";
-import { ListAllCategoriesQuery } from "../../../graphql/queries/index";
-import { DeleteCategoryQuery } from "../../../graphql/mutations/index";
-import CreateCategory from "../components/CreateCategory";
+import { ListAllTaxonsQuery } from "../../../graphql/queries/index";
+import { DeleteTaxonQuery } from "../../../graphql/mutations/index";
+import CreateTaxon from "../components/CreateTaxon";
 import Buttons from "../../common/components/Buttons";
 import ReactTable from "react-table";
 import { MdRefresh, MdAdd } from "react-icons/lib/md";
 import { MdEdit, MdClose } from "react-icons/lib/md";
 import Modal from "react-awesome-modal";
 
-import "../styles/ListCategory.css";
+import "../styles/ListTaxon.css";
 import "../../common/styles/Reactable.css";
 
-class ListCategory extends Component {
+class ListTaxon extends Component {
   constructor(props) {
     super(props);
 
@@ -30,20 +30,20 @@ class ListCategory extends Component {
   }
 
   renderCreateOrEditModal() {
-    const { editSingleCategory } = this.state;
+    const { editSingleTaxon } = this.state;
 
-    if (editSingleCategory) {
+    if (editSingleTaxon) {
       return (
-        <CreateCategory
+        <CreateTaxon
           closeModal={this.closeCreateModal}
-          name={editSingleCategory.name}
-          id={editSingleCategory.id}
+          name={editSingleTaxon.name}
+          id={editSingleTaxon.id}
           editing
         />
       );
     }
 
-    return <CreateCategory closeModal={this.closeCreateModal} />;
+    return <CreateTaxon closeModal={this.closeCreateModal} />;
   }
 
   renderModal() {
@@ -61,7 +61,7 @@ class ListCategory extends Component {
   }
 
   closeCreateModal() {
-    this.setState({ visible: false, editSingleCategory: null });
+    this.setState({ visible: false, editSingleTaxon: null });
     this.props.data.refetch();
   }
 
@@ -108,7 +108,7 @@ class ListCategory extends Component {
               className="Reactable-edit"
               onClick={() =>
                 this.setState({
-                  editSingleCategory: { id: props.row.id, name: props.row.name },
+                  editSingleTaxon: { id: props.row.id, name: props.row.name },
                   visible: true
                 })}
             >
@@ -121,7 +121,7 @@ class ListCategory extends Component {
         width: 78,
         Cell: props => (
           <p style={{ textAlign: "center", margin: 0 }}>
-            {props.row._original.products.length === 0 && (
+            {props.row._original.availabilities.length === 0 && (
               <span
                 className="Reactable-delete"
                 onClick={() => this.handleDelete(props.row.id)}
@@ -138,13 +138,13 @@ class ListCategory extends Component {
         color: "transparent",
         callback: this.handleRefresh,
         icon: <MdRefresh size={18} />,
-        label: "Rafraichir les catégories"
+        label: "Rafraichir les taxons"
       },
       {
         color: "transparent",
         callback: this.openCreateModal,
         icon: <MdAdd size={18} />,
-        label: "Ajouter une catégorie"
+        label: "Ajouter un taxon"
       }
     ];
     return (
@@ -154,8 +154,8 @@ class ListCategory extends Component {
         <ReactTable
           loadingText="Rafraichissement des données.."
           loading={this.state.loading}
-          noDataText="Aucune catégorie.."
-          data={this.props.data.allCategories}
+          noDataText="Aucun taxons.."
+          data={this.props.data.allTaxons}
           columns={columns}
           className="Reactable-table"
           style={{
@@ -167,7 +167,6 @@ class ListCategory extends Component {
   }
 }
 
-export default compose(
-  graphql(ListAllCategoriesQuery),
-  graphql(DeleteCategoryQuery)
-)(ListCategory);
+export default compose(graphql(ListAllTaxonsQuery), graphql(DeleteTaxonQuery))(
+  ListTaxon
+);
