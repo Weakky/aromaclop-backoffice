@@ -104,9 +104,9 @@ class CreateProduct extends Component {
   }
 
   render() {
-    const { allBrands, allTaxons, allCategories, loading } = this.props.data;
+    const { allBrands, allTaxons, allCategories, loading, error } = this.props.data;
 
-    if (loading) {
+    if (loading || error) {
       return <div>Loading...</div>;
     }
 

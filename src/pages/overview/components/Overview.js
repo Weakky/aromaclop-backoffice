@@ -25,6 +25,7 @@ class Overview extends Component {
 
   render() {
     const {
+      error,
       loading,
       allProductCount,
       fullyAvailableProductCount,
@@ -34,7 +35,7 @@ class Overview extends Component {
       processedOrders
     } = this.props.data;
 
-    if (loading)
+    if (loading || error)
       return (
         <div className="Overview-spinner">
           <Spinner name="ball-clip-rotate-multiple" color="#d3746a" noFadeIn />
