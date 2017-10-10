@@ -137,7 +137,7 @@
 .animated {
   margin-top: 10px;
   opacity: 1;
-  -webkit-animation: expand 1s;
+  -webkit-animation: expand 0.5s;
 }
 
 @-webkit-keyframes expand {
