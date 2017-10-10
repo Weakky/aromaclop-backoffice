@@ -154,7 +154,7 @@ class ListBrands extends Component {
         <ReactTable
           loadingText="Rafraichissement des données.."
           loading={this.state.loading}
-          noDataText="Aucune marque.."
+          noDataText="Aucune données"
           data={this.props.data.allBrands}
           columns={columns}
           className="animated Reactable-table"

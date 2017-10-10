@@ -108,7 +108,7 @@ class ListOrder extends Component {
         <ReactTable
           loadingText="Rafraichissement des données.."
           loading={this.state.loading}
-          noDataText="Aucune commande.."
+          noDataText="Aucune données"
           data={this.props.data.allOrders}
           className="animated Reactable-table -highlight"
           columns={columns}
@@ -146,7 +146,7 @@ class ListOrder extends Component {
               <div className="Reactable-container-subTable">
                 <ReactTable
                   className="Reactable-subTable"
-                  noDataText="Aucun article.."
+                  noDataText="Aucune données"
                   data={row.original.items}
                   columns={columns}
                   defaultPageSize={

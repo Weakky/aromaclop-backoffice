@@ -394,7 +394,7 @@ class ListProduct extends Component {
         <ReactTable
           loadingText="Rafraichissement des données.."
           loading={this.state.loading}
-          noDataText="Chargement des données.."
+          noDataText="Aucune données"
           className="animated Reactable-table -highlight"
           data={this.props.data.allProducts}
           columns={columns}

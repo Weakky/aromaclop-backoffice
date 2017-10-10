@@ -58,7 +58,7 @@ class ListUser extends Component {
         <ReactTable
           loadingText="Rafraichissement des données.."
           loading={this.state.loading}
-          noDataText="Aucun client.."
+          noDataText="Aucune données"
           data={this.props.data.allUsers}
           className="animated Reactable-table -highlight"
           columns={columns}

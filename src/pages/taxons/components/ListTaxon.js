@@ -154,7 +154,7 @@ class ListTaxon extends Component {
         <ReactTable
           loadingText="Rafraichissement des données.."
           loading={this.state.loading}
-          noDataText="Aucun taxons.."
+          noDataText="Aucune données"
           data={this.props.data.allTaxons}
           columns={columns}
           className="animated Reactable-table"
