@@ -154,7 +154,7 @@ class ListCategory extends Component {
         <ReactTable
           loadingText="Rafraichissement des données.."
           loading={this.state.loading}
-          noDataText="Aucune catégorie.."
+          noDataText="Aucune données"
           data={this.props.data.allCategories}
           columns={columns}
           className="animated Reactable-table"
