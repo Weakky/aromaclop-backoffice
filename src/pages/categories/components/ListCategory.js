@@ -157,7 +157,7 @@ class ListCategory extends Component {
           noDataText="Aucune catégorie.."
           data={this.props.data.allCategories}
           columns={columns}
-          className="Reactable-table"
+          className="animated Reactable-table"
           style={{
             height: "91vh"
           }}

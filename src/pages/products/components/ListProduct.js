@@ -395,7 +395,7 @@ class ListProduct extends Component {
           loadingText="Rafraichissement des données.."
           loading={this.state.loading}
           noDataText="Chargement des données.."
-          className="Reactable-table -highlight"
+          className="animated Reactable-table -highlight"
           data={this.props.data.allProducts}
           columns={columns}
           defaultFilterMethod={filterCaseInsensitive}

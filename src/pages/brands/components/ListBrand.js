@@ -157,7 +157,7 @@ class ListBrands extends Component {
           noDataText="Aucune marque.."
           data={this.props.data.allBrands}
           columns={columns}
-          className="Reactable-table"
+          className="animated Reactable-table"
           style={{
             height: "91vh"
           }}

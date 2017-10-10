@@ -110,11 +110,8 @@ class ListOrder extends Component {
           loading={this.state.loading}
           noDataText="Aucune commande.."
           data={this.props.data.allOrders}
-          className="Reactable-table -highlight"
+          className="animated Reactable-table -highlight"
           columns={columns}
-          style={{
-            height: "91vh"
-          }}
           SubComponent={row => {
             const columns = [
               {

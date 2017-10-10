@@ -157,7 +157,7 @@ class ListTaxon extends Component {
           noDataText="Aucun taxons.."
           data={this.props.data.allTaxons}
           columns={columns}
-          className="Reactable-table"
+          className="animated Reactable-table"
           style={{
             height: "91vh"
           }}
