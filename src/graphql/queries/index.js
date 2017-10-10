@@ -56,6 +56,15 @@ export const ListAllProductsQuery = gql`
   }
 `;
 
+export const ListAllUsersQuery = gql`
+	query allUsers {
+		allUsers {
+			id
+			createdAt
+		}
+	}
+`;
+
 export const ListAllOrdersQuery = gql`
   query allOrders {
     allOrders {

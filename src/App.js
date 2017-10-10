@@ -10,6 +10,7 @@ import ListOrder from "./pages/orders/components/ListOrder";
 import ListBrand from "./pages/brands/components/ListBrand";
 import ListCategorie from "./pages/categories/components/ListCategory";
 import ListTaxon from "./pages/taxons/components/ListTaxon";
+import ListUser from "./pages/users/components/ListUser";
 import Overview from "./pages/overview/components/Overview";
 import ApolloClient, { createNetworkInterface } from "apollo-client";
 import { ApolloProvider } from "react-apollo";
@@ -117,6 +118,7 @@ class App extends Component {
                 component={ListCategorie}
               />
               <Route exact={true} path="/Taxons" component={ListTaxon} />
+              <Route exact={true} path="/Clients" component={ListUser} />
             </Main>
           </Root>
         </Router>
