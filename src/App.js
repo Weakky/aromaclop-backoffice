@@ -106,7 +106,7 @@ class App extends Component {
               <Route
                 exact={true}
                 path="/"
-                render={() => <Redirect from="/" to="/Overview" />}
+                render={() => <Redirect from="/" to="/Statistiques" />}
               />
               <Route exact={true} path="/Statistiques" component={Overview} />
               <Route exact={true} path="/Produits" component={ListProduct} />
