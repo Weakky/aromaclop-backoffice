@@ -5,7 +5,9 @@ import proptypes from "prop-types";
 import axios from "axios";
 import { withRouter } from "react-router-dom";
 import { compose, graphql } from "react-apollo";
+import {MdClose} from "react-icons/lib/md";
 import Select from "react-select";
+
 import ImageUpload from "./ImageUpload";
 
 import {
@@ -35,6 +37,7 @@ class CreateProduct extends Component {
     this.initialState = Object.freeze({
       name: "",
       brandId: "",
+      packages: [],
       taxonsIds: [],
       initialTaxonsIds: [],
       categoriesIds: [],
@@ -44,6 +47,10 @@ class CreateProduct extends Component {
     });
 
     this.state = { ...this.initialState };
+
+    this.addPackage = this.addPackage.bind(this);
+    this.removePackage = this.removePackage.bind(this);
+    this.editPackage = this.editPackage.bind(this);
   }
 
   componentWillReceiveProps({
@@ -101,6 +108,24 @@ class CreateProduct extends Component {
         }
       }
     );
+  }
+
+  addPackage() {
+    this.setState({
+      packages: [...this.state.packages, { price: 0, quantity: 0 }]
+    })
+  }
+
+  removePackage(packageIndex) {
+    this.setState({
+      packages: this.state.packages.filter((_, i) => i !== packageIndex)
+    })
+  }
+
+  editPackage({ price, quantity, index }) {
+    this.setState({
+     packages: Object.assign([], this.state.packages, {[index]: { price, quantity }})
+    })
   }
 
   render() {
@@ -212,6 +237,65 @@ class CreateProduct extends Component {
             </label>
           </div>
         )}
+        <label className="Createproduct-label">
+          Catégories
+          <Select
+            placeholder="..."
+            multi
+            value={this.state.categoriesIds}
+            options={categories}
+            clearable={false}
+            onChange={categoriesIds =>
+              this.setState({
+                categoriesIds: categoriesIds.map(({ label, id, value }) => {
+                  if (!id) {
+                    return { id: value, label };
+                  }
+
+                  return { id, label };
+                })
+              })}
+          />
+        </label>
+        <label className="Createproduct-label">
+          Prix par lots
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            {
+              this.state.packages.map((pack, i) => (
+                <span key={i}>
+                    <input
+                      className="Createproduct-input-package"
+                      placeholder="Prix du lot"
+                      onChange={(e) => this.editPackage({
+                        price: e.target.value,
+                        quantity: this.state.packages[i].quantity,
+                        index: i
+                      })}
+                      value={pack.price}
+                    />
+                    <input
+                      className="Createproduct-input-package"
+                      placeholder="Quantité"
+                      onChange={(e) => this.editPackage({
+                        quantity: e.target.value,
+                        price: this.state.packages[i].price,
+                        index: i
+                      })}
+                      value={pack.quantity}
+                    />
+                    <span className="Createproduct-delete-package" onClick={() => this.removePackage(i)}>
+                      <MdClose />
+                    </span>
+                  </span>
+              ))
+            }
+          </div>
+          <button onClick={this.addPackage}> + </button>
+        </label>
+        <ImageUpload
+          onImageSelected={({ file }) => this.setState({ file })}
+          imagePreviewUrl={this.state.file}
+        />
         {this.state.name &&
         this.state.file && (
           <button className="Createproduct-button" onClick={this.handlePost}>
