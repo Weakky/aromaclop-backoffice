@@ -9,6 +9,7 @@ const Buttons = ({ buttons }) => (
   <div className="Buttons-container">
     {_.map(buttons, (button, key) => (
       <Button
+        key={key}
         color={button.color}
         callback={button.callback}
         icon={button.icon}

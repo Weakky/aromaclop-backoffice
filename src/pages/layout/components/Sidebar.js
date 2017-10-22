@@ -11,8 +11,9 @@ const Sidebar = props => (
     </div>
     <div className="Sidebar-nav" {...props} />
     <div className="Sidebar-status">
-      <a target="_blank" href="https://status.graph.cool/">
+      <a rel="noopener noreferrer" target="_blank" href="https://status.graph.cool/">
         <img
+          alt=""
           src={require("../../../assets/img/graphcool.png")}
           className="Sidebar-status-img"
         />
