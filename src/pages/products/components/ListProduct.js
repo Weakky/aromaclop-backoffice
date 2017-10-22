@@ -350,8 +350,8 @@ class ListProduct extends Component {
       <div>
         <Modal
           visible={this.state.visible}
-          width="400"
-          height="620"
+          width="500"
+          height="750"
           effect="fadeInUp"
           onClickAway={() => this.closeCreateModal()}
         >

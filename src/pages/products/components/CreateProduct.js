@@ -126,24 +126,52 @@ class CreateProduct extends Component {
 
     return (
       <div className="Createproduct-container">
-        <label className="Createproduct-label">
-          Nom
-          <input
-            className="Createproduct-input"
-            value={this.state.name}
-            placeholder="..."
-            onChange={e => this.setState({ name: e.target.value })}
+        <div className="Createproduct-row-container">
+          <div className="Createproduct-column-container">
+            <label className="Createproduct-semi-label">
+              Nom
+              <input
+                className="Createproduct-input"
+                value={this.state.name}
+                placeholder="..."
+                onChange={e => this.setState({ name: e.target.value })}
+              />
+            </label>
+            <label className="Createproduct-semi-label">
+              {" "}
+              Marque
+              <Select
+                placeholder="..."
+                value={this.state.brandId}
+                options={brands}
+                clearable={false}
+                onChange={target => this.setState({ brandId: target.value })}
+              />
+            </label>
+          </div>
+          <ImageUpload
+            onImageSelected={({ file }) => this.setState({ file })}
+            imagePreviewUrl={this.state.file}
           />
-        </label>
+        </div>
         <label className="Createproduct-label">
-          {" "}
-          Marque
+          Catégories
           <Select
             placeholder="..."
-            value={this.state.brandId}
-            options={brands}
+            multi
+            value={this.state.categoriesIds}
+            options={categories}
             clearable={false}
-            onChange={target => this.setState({ brandId: target.value })}
+            onChange={categoriesIds =>
+				      this.setState({
+					      categoriesIds: categoriesIds.map(({ label, id, value }) => {
+						      if (!id) {
+							      return { id: value, label };
+						      }
+
+						      return { id, label };
+					      })
+				      })}
           />
         </label>
         <label className="Createproduct-label">
@@ -184,30 +212,6 @@ class CreateProduct extends Component {
             </label>
           </div>
         )}
-        <label className="Createproduct-label">
-          Catégories
-          <Select
-            placeholder="..."
-            multi
-            value={this.state.categoriesIds}
-            options={categories}
-            clearable={false}
-            onChange={categoriesIds =>
-              this.setState({
-                categoriesIds: categoriesIds.map(({ label, id, value }) => {
-                  if (!id) {
-                    return { id: value, label };
-                  }
-
-                  return { id, label };
-                })
-              })}
-          />
-        </label>
-        <ImageUpload
-          onImageSelected={({ file }) => this.setState({ file })}
-          imagePreviewUrl={this.state.file}
-        />
         {this.state.name &&
         this.state.file && (
           <button className="Createproduct-button" onClick={this.handlePost}>

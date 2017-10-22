@@ -1,5 +1,6 @@
 import React from "react";
 import proptypes from "prop-types";
+import { TiUpload } from "react-icons/lib/ti"
 
 import "../styles/imageupload.css";
 
@@ -36,23 +37,25 @@ export default class ImageUpload extends React.Component {
 
   render() {
     const { imagePreviewUrl } = this.state;
-    const imagePreview = imagePreviewUrl ? (
+    const imagePreview = imagePreviewUrl && (
       <img
         alt="preview"
-        style={{ margin: 20, height: 60, width: 60 }}
+        style={{ height: 80, width: 80 }}
         src={imagePreviewUrl}
       />
-    ) : (
-      <div className="Imageupload-previewText">
-        Prévisualisation de l'image..
-      </div>
     );
 
     return (
       <div className="Imageupload-container">
-        <label className="Imageupload-label">Image du produit</label>
-        <input type="file" onChange={e => this._handleImageChange(e)} />
-        <div className="imgPreview">{imagePreview}</div>
+	      {
+	        imagePreview ?
+            <div className="imgPreview">{imagePreview}</div>
+            :
+		        <label className="Imageupload-label-file">
+              <TiUpload size={36} className="Imageupload-icon" />
+            <input id="input-file" type="file" onChange={e => this._handleImageChange(e)}/>
+          </label>
+	      }
       </div>
     );
   }

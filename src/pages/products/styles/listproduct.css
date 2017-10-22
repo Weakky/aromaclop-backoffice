@@ -7,7 +7,7 @@
 }
 
 .Listproduct-modal {
-  padding: 10px;
+  padding: 0 5px;
 }
 
 .Listproduct-delete {
@@ -51,5 +51,4 @@
 .Listproduct-header-label {
   color: #f9f9f9;
   font-size: 12px;
-  letter-spacing: 1px;
 }
