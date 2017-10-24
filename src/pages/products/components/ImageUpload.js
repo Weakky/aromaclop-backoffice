@@ -13,11 +13,19 @@ export default class ImageUpload extends React.Component {
     };
   }
 
+  componentWillReceiveProps({ imagePreviewUrl }) {
+    this.setState({ imagePreviewUrl });
+  }
+
   _handleImageChange(e) {
     e.preventDefault();
 
-    if (!e.target.files.length) {
+    if (!e.target.files.length && !this.state.imagePreviewUrl) {
       this.setState({ imagePreviewUrl: "" });
+      return;
+    }
+
+    if (!e.target.files.length) {
       return;
     }
 
@@ -37,7 +45,7 @@ export default class ImageUpload extends React.Component {
 
   render() {
     const { imagePreviewUrl } = this.state;
-    const imagePreview = imagePreviewUrl && (
+    const imagePreview = (
       <img
         alt="preview"
         style={{ height: 80, width: 80 }}
@@ -47,15 +55,16 @@ export default class ImageUpload extends React.Component {
 
     return (
       <div className="Imageupload-container">
-	      {
-	        imagePreview ?
-            <div className="imgPreview">{imagePreview}</div>
-            :
-		        <label className="Imageupload-label-file">
-              <TiUpload size={36} className="Imageupload-icon" />
-            <input id="input-file" type="file" onChange={e => this._handleImageChange(e)}/>
-          </label>
-	      }
+        <label className="Imageupload-label-file">
+          {
+            imagePreviewUrl
+            ? imagePreview
+            : <TiUpload size={36} className="Imageupload-icon" />
+          }
+          <input id="input-file" type="file"
+                 onChange={(e) => this._handleImageChange(e)}
+                 onClick={(e) => e.target.value = null} />
+        </label>
       </div>
     );
   }

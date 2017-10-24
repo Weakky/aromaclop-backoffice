@@ -246,57 +246,37 @@ class CreateProduct extends Component {
           </div>
         )}
         <label className="Createproduct-label">
-          Catégories
-          <Select
-            placeholder="..."
-            multi
-            value={this.state.categoriesIds}
-            options={categories}
-            clearable={false}
-            onChange={categoriesIds =>
-              this.setState({
-                categoriesIds: categoriesIds.map(({ label, id, value }) => {
-                  if (!id) {
-                    return { id: value, label };
-                  }
-
-                  return { id, label };
-                })
-              })}
-          />
-        </label>
-        <label className="Createproduct-label">
           Prix par lots
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             {
               this.state.packages.map((pack, i) => (
                 <div key={i}>
-                    <input
-                      id={`quantity-${i}`}
-                      className="Createproduct-input-package"
-                      placeholder="Quantité"
-                      onChange={(e) => this.editPackage({
-                        quantity: e.target.value,
-                        price: this.state.packages[i].price,
-                        index: i
-                      })}
-                      value={pack.quantity || ''}
-                    />
-                    <input
-                      id={`price-${i}`}
-                      className="Createproduct-input-package"
-                      placeholder="Prix du lot"
-                      onChange={(e) => this.editPackage({
-                        price: e.target.value,
-                        quantity: this.state.packages[i].quantity,
-                        index: i
-                      })}
-                      value={pack.price || ''}
-                    />
-                    <span className="Createproduct-delete-package" onClick={() => this.removePackage(i)}>
-                      <MdClose />
-                    </span>
-                  </div>
+                  <input
+                    id={`quantity-${i}`}
+                    className="Createproduct-input-package"
+                    placeholder="Quantité"
+                    onChange={(e) => this.editPackage({
+                      quantity: e.target.value,
+                      price: this.state.packages[i].price,
+                      index: i
+                    })}
+                    value={pack.quantity || ''}
+                  />
+                  <input
+                    id={`price-${i}`}
+                    className="Createproduct-input-package"
+                    placeholder="Prix du lot"
+                    onChange={(e) => this.editPackage({
+                      price: e.target.value,
+                      quantity: this.state.packages[i].quantity,
+                      index: i
+                    })}
+                    value={pack.price || ''}
+                  />
+                  <span className="Createproduct-delete-package" onClick={() => this.removePackage(i)}>
+                    <MdClose />
+                  </span>
+                </div>
               ))
             }
           </div>
@@ -304,10 +284,6 @@ class CreateProduct extends Component {
             <MdAdd />
           </span>
         </label>
-        <ImageUpload
-          onImageSelected={({ file }) => this.setState({ file })}
-          imagePreviewUrl={this.state.file}
-        />
         {this.state.name &&
         this.state.file && (
           <button className="Createproduct-button" onClick={this.handlePost}>
