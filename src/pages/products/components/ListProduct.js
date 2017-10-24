@@ -175,6 +175,7 @@ class ListProduct extends Component {
         <CreateProduct
           closeModal={this.closeCreateModal}
           name={editSingleProduct.name}
+          price={editSingleProduct.price}
           brandId={editSingleProduct.brandId}
           categoriesIds={editSingleProduct.categoriesIds}
           taxonsIds={editSingleProduct.taxonsIds}
@@ -266,7 +267,7 @@ class ListProduct extends Component {
       {
         width: 78,
         Cell: ({
-          original: { id, name, brand, categories, productTaxons, imageUrl, packages }
+          original: { id, name, price, brand, categories, productTaxons, imageUrl, packages }
         }) => (
           <p style={{ textAlign: "center", margin: 0 }}>
             <span
@@ -274,6 +275,7 @@ class ListProduct extends Component {
                 this.setState({
                   editSingleProduct: {
                     name: name,
+                    price,
                     brandId: brand.id,
                     categoriesIds: categories.map(({ id, name }) => ({
                       id,

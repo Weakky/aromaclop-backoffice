@@ -165,9 +165,11 @@ export const UpdateAvailabilityQueryOptions = {
   })
 };
 
+//TODO: Change type LIQUID to proper type (LIQUID || ACCESSORIES)
 export const CreateProductMutation = gql`
   mutation createProduct(
     $name: String!
+    $price: Float!
     $imageUrl: String!
     $brandId: ID
     $categoriesIds: [ID!]
@@ -177,10 +179,12 @@ export const CreateProductMutation = gql`
       imageUrl: $imageUrl
       brandId: $brandId
       categoriesIds: $categoriesIds
+      price: $price
       type: LIQUID
     ) {
       id
       name
+      price
       categories {
         id
         name
@@ -208,13 +212,14 @@ export const CreateProductMutation = gql`
 
 export const CreateProductMutationOptions = {
   props: ({ mutate }) => ({
-    addProduct: ({ name, imageUrl, brandId, categoriesIds }) =>
+    addProduct: ({ name, price, imageUrl, brandId, categoriesIds }) =>
       mutate({
         variables: {
           name,
+          price,
           imageUrl,
           brandId,
-          categoriesIds
+          categoriesIds,
         },
         update: (store, { data: { createProduct } }) => {
           const data = store.readQuery({ query: ListAllProductsQuery });
@@ -318,6 +323,7 @@ export const UpdateProductMutation = gql`
   mutation updateProduct(
     $id: ID!
     $name: String!
+    $price: Float!
     $imageUrl: String!
     $brandId: ID
     $categoriesIds: [ID!]
@@ -325,12 +331,14 @@ export const UpdateProductMutation = gql`
     updateProduct(
       id: $id
       name: $name
+      price: $price
       imageUrl: $imageUrl
       brandId: $brandId
       categoriesIds: $categoriesIds
     ) {
       id
       name
+      price
       categories {
         id
         name
@@ -346,11 +354,12 @@ export const UpdateProductMutation = gql`
 
 export const UpdateProductMutationOptions = {
   props: ({ mutate }) => ({
-    updateProduct: ({ id, name, imageUrl, brandId, categoriesIds }) =>
+    updateProduct: ({ id, price, name, imageUrl, brandId, categoriesIds }) =>
       mutate({
         variables: {
           id,
           name,
+          price,
           imageUrl,
           brandId,
           categoriesIds

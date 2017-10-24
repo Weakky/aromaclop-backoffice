@@ -39,16 +39,17 @@ class CreateProduct extends Component {
     this.handlePost = this.handlePost.bind(this);
 
     this.initialState = Object.freeze({
-      name: "",
-      brandId: "",
+      name: '',
+      brandId: '',
+      price: '',
       packages: [],
       initialPackages: [],
       taxonsIds: [],
       initialTaxonsIds: [],
       categoriesIds: [],
       file: null,
-      initialFile: "",
-      productId: ""
+      initialFile: '',
+      productId: ''
     });
 
     this.state = { ...this.initialState };
@@ -66,9 +67,11 @@ class CreateProduct extends Component {
     file,
     productId,
     packages,
+    price,
   }) {
     this.setState({
       name,
+      price,
       brandId,
       taxonsIds,
       initialTaxonsIds: taxonsIds,
@@ -246,6 +249,15 @@ class CreateProduct extends Component {
           </div>
         )}
         <label className="Createproduct-label">
+          Prix unitaire
+          <input
+            className="Createproduct-input"
+            value={this.state.price}
+            placeholder="Prix unitaire en €"
+            onChange={(e) => this.setState({ price: e.target.value })}
+          />
+        </label>
+        <label className="Createproduct-label">
           Prix par lots
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             {
@@ -265,7 +277,7 @@ class CreateProduct extends Component {
                   <input
                     id={`price-${i}`}
                     className="Createproduct-input-package"
-                    placeholder="Prix du lot"
+                    placeholder="Prix du lot en €"
                     onChange={(e) => this.editPackage({
                       price: e.target.value,
                       quantity: this.state.packages[i].quantity,
@@ -298,6 +310,7 @@ class CreateProduct extends Component {
     const {
       productId,
       name,
+      price,
       brandId,
       taxonsIds,
       initialTaxonsIds,
@@ -319,6 +332,7 @@ class CreateProduct extends Component {
 
       await this.props.updateProduct({
          id: productId,
+         price: parseFloat(price),
          name,
          brandId,
          categoriesIds: categoriesIds.map(({ id }) => id),
@@ -372,7 +386,7 @@ class CreateProduct extends Component {
   }
 
   async handleCreatePost() {
-    const { name, brandId, taxonsIds, categoriesIds, packages } = this.state;
+    const { name, price, brandId, taxonsIds, categoriesIds, packages } = this.state;
     const { data: { allBrands, allCategories } } = this.props;
 
     try {
@@ -382,6 +396,7 @@ class CreateProduct extends Component {
         data: { createProduct: { id: productId } }
       } = await this.props.addProduct({
         name,
+        price: parseFloat(price),
         imageUrl: url,
         brandId: brandId ? brandId : allBrands[0].id,
         categoriesIds:
@@ -436,16 +451,18 @@ CreateProduct.proptypes = {
   file: proptypes.object,
   editing: proptypes.bool,
   packages: proptypes.array,
+  price: proptypes.number,
 };
 
 CreateProduct.defaultProps = {
-  name: "",
-  brandId: "",
+  name: '',
+  brandId: '',
   taxonsIds: [],
   categoriesIds: [],
   file: null,
   editing: false,
   packages: [],
+  price: '',
 };
 
 const CreateProductWithMutationAndQueries = compose(

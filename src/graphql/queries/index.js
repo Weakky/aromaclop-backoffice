@@ -31,6 +31,7 @@ export const ListAllProductsQuery = gql`
     allProducts {
       id
       name
+      price
       imageUrl
       brand {
         id
