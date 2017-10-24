@@ -262,7 +262,7 @@ class CreateProduct extends Component {
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             {
               this.state.packages.map((pack, i) => (
-                <div key={i}>
+                <div className="Createproduct-package-container" key={i}>
                   <input
                     id={`quantity-${i}`}
                     className="Createproduct-input-package"
@@ -293,7 +293,7 @@ class CreateProduct extends Component {
             }
           </div>
           <span className="Createproduct-create-package" onClick={this.addPackage}>
-            <MdAdd />
+            Ajouter un package
           </span>
         </label>
         {this.state.name &&

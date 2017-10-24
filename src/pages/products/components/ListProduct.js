@@ -216,7 +216,7 @@ class ListProduct extends Component {
         accessor: "brand.name",
         Cell: props => <p className="Reactable-cell">{props.value}</p>,
         filterable: true,
-        width: 250
+        width: 200
       },
       {
         Header: "Catégorie",
@@ -263,6 +263,21 @@ class ListProduct extends Component {
         ),
         filterable: false,
         sortable: false
+      },
+      {
+        Header: "Prix",
+        width: 250,
+        accessor: "productPackages",
+        Cell: (props) => (
+          <div className="Reactable-cell-container">
+            <span className="Reactable-vignette">{props.original.price}€ </span>
+            {
+              _.map(props.original.packages, ({ price, quantity }, key) => (
+                <span key={key} className="Reactable-vignette">{price}€ / {quantity}</span>
+              ))
+            }
+          </div>
+        )
       },
       {
         width: 78,
