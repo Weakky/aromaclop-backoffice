@@ -5,7 +5,7 @@ import proptypes from "prop-types";
 import axios from "axios";
 import { withRouter } from "react-router-dom";
 import { compose, graphql } from "react-apollo";
-import {MdClose} from "react-icons/lib/md";
+import {MdClose, MdAdd} from "react-icons/lib/md";
 import Select from "react-select";
 
 import ImageUpload from "./ImageUpload";
@@ -17,6 +17,10 @@ import {
   UpdateProductMutationOptions,
   CreateProductMutation,
   CreateProductMutationOptions,
+  CreatePackageMutation,
+  CreatePackageMutationOptions,
+  DeletePackageMutation,
+  DeletePackageMutationOptions,
   CreateProductTaxonsMutation,
   CreateProductTaxonsMutationOptions,
   DeleteProductTaxonsMutation,
@@ -38,6 +42,7 @@ class CreateProduct extends Component {
       name: "",
       brandId: "",
       packages: [],
+      initialPackages: [],
       taxonsIds: [],
       initialTaxonsIds: [],
       categoriesIds: [],
@@ -59,7 +64,8 @@ class CreateProduct extends Component {
     taxonsIds,
     categoriesIds,
     file,
-    productId
+    productId,
+    packages,
   }) {
     this.setState({
       name,
@@ -69,7 +75,9 @@ class CreateProduct extends Component {
       categoriesIds,
       file,
       initialFile: file,
-      productId
+      productId,
+      packages,
+      initialPackages: packages,
     });
   }
 
@@ -112,7 +120,7 @@ class CreateProduct extends Component {
 
   addPackage() {
     this.setState({
-      packages: [...this.state.packages, { price: 0, quantity: 0 }]
+      packages: [...this.state.packages, { price: null, quantity: null }]
     })
   }
 
@@ -262,18 +270,9 @@ class CreateProduct extends Component {
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             {
               this.state.packages.map((pack, i) => (
-                <span key={i}>
+                <div key={i}>
                     <input
-                      className="Createproduct-input-package"
-                      placeholder="Prix du lot"
-                      onChange={(e) => this.editPackage({
-                        price: e.target.value,
-                        quantity: this.state.packages[i].quantity,
-                        index: i
-                      })}
-                      value={pack.price}
-                    />
-                    <input
+                      id={`quantity-${i}`}
                       className="Createproduct-input-package"
                       placeholder="Quantité"
                       onChange={(e) => this.editPackage({
@@ -281,16 +280,29 @@ class CreateProduct extends Component {
                         price: this.state.packages[i].price,
                         index: i
                       })}
-                      value={pack.quantity}
+                      value={pack.quantity || ''}
+                    />
+                    <input
+                      id={`price-${i}`}
+                      className="Createproduct-input-package"
+                      placeholder="Prix du lot"
+                      onChange={(e) => this.editPackage({
+                        price: e.target.value,
+                        quantity: this.state.packages[i].quantity,
+                        index: i
+                      })}
+                      value={pack.price || ''}
                     />
                     <span className="Createproduct-delete-package" onClick={() => this.removePackage(i)}>
                       <MdClose />
                     </span>
-                  </span>
+                  </div>
               ))
             }
           </div>
-          <button onClick={this.addPackage}> + </button>
+          <span className="Createproduct-create-package" onClick={this.addPackage}>
+            <MdAdd />
+          </span>
         </label>
         <ImageUpload
           onImageSelected={({ file }) => this.setState({ file })}
@@ -315,7 +327,9 @@ class CreateProduct extends Component {
       initialTaxonsIds,
       categoriesIds,
       file,
-      initialFile
+      initialFile,
+      packages,
+      initialPackages,
     } = this.state;
 
     let imageUrl = file;
@@ -328,48 +342,61 @@ class CreateProduct extends Component {
       }
 
       await this.props.updateProduct({
-        id: productId,
-        name,
-        brandId,
-        categoriesIds: categoriesIds.map(({ id }) => id),
-        imageUrl
-      });
+         id: productId,
+         name,
+         brandId,
+         categoriesIds: categoriesIds.map(({ id }) => id),
+         imageUrl
+       });
 
-      const toCreate = _.differenceBy(taxonsIds, initialTaxonsIds, "id");
-      const toDelete = _.differenceBy(initialTaxonsIds, taxonsIds, "id");
-      const toUpdate = initialTaxonsIds.filter(taxon => {
-        const associatedTaxon = taxonsIds.find(({ id }) => id === taxon.id);
+       const toCreateTaxons = _.differenceBy(taxonsIds, initialTaxonsIds, 'id');
+       const toDeleteTaxons = _.differenceBy(initialTaxonsIds, taxonsIds, 'id');
+       const toUpdateTaxons = initialTaxonsIds.filter((taxon) => {
+         const associatedTaxon = taxonsIds.find(({ id }) => id === taxon.id);
 
-        return associatedTaxon && associatedTaxon.available !== taxon.available;
-      });
+         return associatedTaxon && associatedTaxon.available !== taxon.available;
+       });
+
+      const toCreatePackages = _.differenceBy(packages, initialPackages, 'id');
+      const toDeletePackages = _.differenceBy(initialPackages, packages, 'id');
 
       await bluebird.all([
-        bluebird.map(toUpdate, ({ productTaxonId, available }) =>
-          this.props.updateAvailability({
-            id: productTaxonId,
-            available: !available
+         bluebird.map(toUpdateTaxons, ({ productTaxonId, available }) =>
+           this.props.updateAvailability({
+             id: productTaxonId,
+             available: !available
+           })
+         ),
+         bluebird.map(toDeleteTaxons, ({ productTaxonId }) =>
+           this.props.deleteProductTaxons({
+             id: productTaxonId
+           })
+         ),
+         bluebird.map(toCreateTaxons, ({ id, available }) =>
+           this.props.addProductTaxons({
+             taxonId: id,
+             available,
+             productId
+           })
+         ),
+        bluebird.map(toDeletePackages, ({ id }) => (
+          this.props.deletePackage({ id })
+        )),
+        bluebird.map(toCreatePackages, (pack) => (
+          this.props.createPackage({
+            productId,
+            price: parseFloat(pack.price),
+            quantity: parseInt(pack.quantity)
           })
-        ),
-        bluebird.map(toDelete, ({ productTaxonId }) =>
-          this.props.deleteProductTaxons({
-            id: productTaxonId
-          })
-        ),
-        bluebird.map(toCreate, ({ id, available }) =>
-          this.props.addProductTaxons({
-            taxonId: id,
-            available,
-            productId
-          })
-        )
-      ]);
+        ))
+       ]);
     } catch (e) {
       console.log(e);
     }
   }
 
   async handleCreatePost() {
-    const { name, brandId, taxonsIds, categoriesIds } = this.state;
+    const { name, brandId, taxonsIds, categoriesIds, packages } = this.state;
     const { data: { allBrands, allCategories } } = this.props;
 
     try {
@@ -387,16 +414,25 @@ class CreateProduct extends Component {
             : allCategories[0].id
       });
 
-      await bluebird.map(taxonsIds, taxon =>
+      await bluebird.map(taxonsIds, (taxon) => (
         this.props.addProductTaxons({
           taxonId: taxon.id,
           productId,
           available: taxon.available
         })
-      );
+      ));
+
+      await bluebird.map(packages, (pack) => (
+        this.props.createPackage({
+          productId,
+          price: parseFloat(pack.price),
+          quantity: parseInt(pack.quantity)
+        })
+      ))
+
     } catch (e) {
       //TODO: Handle error (could not add product)
-      console.log(e);
+      console.error('Failed creating product', e);
     }
   }
 
@@ -422,7 +458,8 @@ CreateProduct.proptypes = {
   taxonsIds: proptypes.array,
   categoriesIds: proptypes.array,
   file: proptypes.object,
-  editing: proptypes.bool
+  editing: proptypes.bool,
+  packages: proptypes.array,
 };
 
 CreateProduct.defaultProps = {
@@ -431,12 +468,15 @@ CreateProduct.defaultProps = {
   taxonsIds: [],
   categoriesIds: [],
   file: null,
-  editing: false
+  editing: false,
+  packages: [],
 };
 
 const CreateProductWithMutationAndQueries = compose(
   graphql(UpdateProductMutation, UpdateProductMutationOptions),
   graphql(CreateProductMutation, CreateProductMutationOptions),
+  graphql(CreatePackageMutation, CreatePackageMutationOptions),
+  graphql(DeletePackageMutation, DeletePackageMutationOptions),
   graphql(CreateProductTaxonsMutation, CreateProductTaxonsMutationOptions),
   graphql(DeleteProductTaxonsMutation, DeleteProductTaxonsMutationOptions),
   graphql(UpdateAvailabilityQuery, UpdateAvailabilityQueryOptions),

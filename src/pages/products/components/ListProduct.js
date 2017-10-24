@@ -180,6 +180,7 @@ class ListProduct extends Component {
           taxonsIds={editSingleProduct.taxonsIds}
           file={editSingleProduct.file}
           productId={editSingleProduct.productId}
+          packages={editSingleProduct.packages}
           editing
         />
       );
@@ -265,7 +266,7 @@ class ListProduct extends Component {
       {
         width: 78,
         Cell: ({
-          original: { id, name, brand, categories, productTaxons, imageUrl }
+          original: { id, name, brand, categories, productTaxons, imageUrl, packages }
         }) => (
           <p style={{ textAlign: "center", margin: 0 }}>
             <span
@@ -285,7 +286,8 @@ class ListProduct extends Component {
                       label: productTaxon.taxon.name
                     })),
                     productId: id,
-                    file: imageUrl
+                    file: imageUrl,
+                    packages
                   },
                   visible: true
                 })}
@@ -303,7 +305,7 @@ class ListProduct extends Component {
         Cell: props => (
           <p style={{ textAlign: "center", margin: 0 }}>
             <span
-              onClick={() => this.handleDelete(props.row.id)}
+              onClick={() => this.handleDelete(props.original.id)}
               className="Reactable-delete"
             >
               <MdClose />

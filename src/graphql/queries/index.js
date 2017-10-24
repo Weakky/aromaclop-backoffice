@@ -52,6 +52,11 @@ export const ListAllProductsQuery = gql`
           name
         }
       }
+      packages {
+        id
+        price
+        quantity
+      }
     }
   }
 `;

@@ -177,6 +177,7 @@ export const CreateProductMutation = gql`
       imageUrl: $imageUrl
       brandId: $brandId
       categoriesIds: $categoriesIds
+      type: LIQUID
     ) {
       id
       name
@@ -196,6 +197,11 @@ export const CreateProductMutation = gql`
           name
         }
       }
+      packages {
+        id
+        price
+        quantity
+      }
     }
   }
 `;
@@ -214,6 +220,94 @@ export const CreateProductMutationOptions = {
           const data = store.readQuery({ query: ListAllProductsQuery });
 
           data.allProducts.push(createProduct);
+          store.writeQuery({ query: ListAllProductsQuery, data });
+        }
+      })
+  })
+};
+
+export const CreatePackageMutation = gql`  
+  mutation createPackage(
+      $price: Float!
+      $quantity: Int!
+      $productId: ID!
+  ) {
+      createPackage(
+          price: $price
+          quantity: $quantity
+          productId: $productId
+      ) {
+          id
+          price
+          quantity
+      }
+  }
+`;
+
+export const CreatePackageMutationOptions = {
+  props: ({ mutate }) => ({
+    createPackage: ({ productId, price, quantity }) =>
+      mutate({
+        variables: {
+          productId,
+          price,
+          quantity
+        },
+        update: (store, { data: { createPackage } }) => {
+          const data = store.readQuery({ query: ListAllProductsQuery });
+
+          data.allProducts = data.allProducts.map((product) => {
+            if (product.id === productId) {
+              return {
+                ...product,
+                packages: [...product.packages, createPackage]
+              };
+            }
+            return product;
+          });
+
+          store.writeQuery({ query: ListAllProductsQuery, data });
+        }
+
+      }),
+  })
+};
+
+export const DeletePackageMutation = gql`
+  mutation deletePackage($id: ID!) {
+      deletePackage(id: $id) {
+          id
+      }
+  }
+`;
+
+export const DeletePackageMutationOptions = {
+  props: ({ mutate }) => ({
+    deletePackage: ({ id }) =>
+      mutate({
+        variables: {
+          id,
+        },
+        update: (store, { data: { deletePackage } }) => {
+          const data = store.readQuery({ query: ListAllProductsQuery });
+
+          data.allProducts = data.allProducts.map(product => {
+            // We have no reference to the productId, so we have to find it manually
+            const associatedProduct = product.packages.find(
+              ({ id: packageId }) => packageId === deletePackage.id
+            );
+
+            if (associatedProduct) {
+              return {
+                ...product,
+                packages: product.packages.filter(
+                  ({ id: packageId }) => packageId !== deletePackage.id
+                )
+              };
+            }
+            return product;
+          });
+
           store.writeQuery({ query: ListAllProductsQuery, data });
         }
       })
