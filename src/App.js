@@ -12,6 +12,7 @@ import ListCategorie from "./pages/categories/components/ListCategory";
 import ListTaxon from "./pages/taxons/components/ListTaxon";
 import ListUser from "./pages/users/components/ListUser";
 import Overview from "./pages/overview/components/Overview";
+import Login from './pages/login/components/Login';
 import ApolloClient, { createNetworkInterface } from "apollo-client";
 import { ApolloProvider } from "react-apollo";
 import {
@@ -28,7 +29,8 @@ import {
   TiBookmark,
   TiGroupOutline,
   TiChartLineOutline,
-  TiPipette
+  TiPipette,
+    TiUser
 } from "react-icons/lib/ti";
 
 import "./App.css";
@@ -80,7 +82,11 @@ class App extends Component {
       {
         name: "Taxons",
         icon: <TiPipette size={19} className="App-icon" />
-      }
+      },
+        {
+          name: 'Login',
+            icon: <TiUser size={19} className="App-icon" />
+        }
     ];
 
     return (
@@ -112,11 +118,8 @@ class App extends Component {
               <Route exact={true} path="/Produits" component={ListProduct} />
               <Route exact={true} path="/Commandes" component={ListOrder} />
               <Route exact={true} path="/Marques" component={ListBrand} />
-              <Route
-                exact={true}
-                path="/Categories"
-                component={ListCategorie}
-              />
+              <Route exact={true} path="/Login" component={Login}/>
+              <Route exact={true} path="/Categories" component={ListCategorie}/>
               <Route exact={true} path="/Taxons" component={ListTaxon} />
               <Route exact={true} path="/Clients" component={ListUser} />
             </Main>
